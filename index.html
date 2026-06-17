@@ -850,41 +850,21 @@ function initData(){
     saveWords(words);
   }
 
-  // Migration: add any missing DEFAULT_VOCAB words and sync cs_acc for all existing profiles
-  const defaultByEn = {};
-  DEFAULT_VOCAB.forEach(w=>{ defaultByEn[w.en.toLowerCase()]=w; });
+  // Vocab version — bump this number whenever DEFAULT_VOCAB is replaced wholesale.
+  // All profiles will have their word list reset to the new DEFAULT_VOCAB.
+  const VOCAB_VERSION = 2;
+  const storedVersion = LS.get('vocab_version', 0);
   const allProfiles = getProfiles()||[];
-  allProfiles.forEach(p=>{
-    const existing = LS.get(`vocab_words_${p.id}`,null);
-    if(!existing||existing.length===0){
-      const seeded=DEFAULT_VOCAB.map((w,i)=>({...w,id:'w_seed_'+i+'_'+p.id}));
-      LS.set(`vocab_words_${p.id}`,seeded);
-      return;
-    }
-    // Sync fields from DEFAULT_VOCAB into existing stored words
-    let changed = false;
-    const updated = existing.map(w=>{
-      const def = defaultByEn[w.en.toLowerCase()];
-      if(!def) return w;
-      let upd = w;
-      if(def.cs_acc && w.cs_acc !== def.cs_acc){ upd={...upd,cs_acc:def.cs_acc}; changed=true; }
-      if(def.plural && !w.plural){ upd={...upd,plural:true}; changed=true; }
-      if(def.cs_verb && w.cs_verb !== def.cs_verb){ upd={...upd,cs_verb:def.cs_verb}; changed=true; }
-      if(def.noSentence && !w.noSentence){ upd={...upd,noSentence:true}; changed=true; }
-      if(def.category && w.category !== def.category){ upd={...upd,category:def.category}; changed=true; }
-      if(def.type && w.type !== def.type){ upd={...upd,type:def.type}; changed=true; }
-      return upd;
+  if(storedVersion < VOCAB_VERSION){
+    allProfiles.forEach(p=>{
+      // Keep only words the user manually added (no unit = custom word)
+      const existing = LS.get(`vocab_words_${p.id}`, []);
+      const custom = existing.filter(w => !w.unit);
+      const fresh = DEFAULT_VOCAB.map((w,i)=>({...w,id:'w_v2_'+i+'_'+p.id}));
+      LS.set(`vocab_words_${p.id}`, [...fresh, ...custom]);
     });
-    // Add all missing DEFAULT_VOCAB words
-    const existingKeys = new Set(updated.map(w=>w.en.toLowerCase()));
-    const toAdd = DEFAULT_VOCAB.filter(w=>!existingKeys.has(w.en.toLowerCase()));
-    if(toAdd.length>0){
-      const newWords = toAdd.map((w,i)=>({...w,id:'w_new_'+i+'_'+p.id}));
-      LS.set(`vocab_words_${p.id}`,[...updated,...newWords]);
-    } else if(changed){
-      LS.set(`vocab_words_${p.id}`,updated);
-    }
-  });
+    LS.set('vocab_version', VOCAB_VERSION);
+  }
 
   updateStreak();
 }
