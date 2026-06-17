@@ -889,6 +889,15 @@ function initData(){
     LS.set('vocab_version', VOCAB_VERSION);
   }
 
+  // One-time cleanup: clear words for user-created profiles (not the 6 defaults)
+  if(!LS.get('vocab_user_cleanup_v1', false)){
+    const defaultNames = DEFAULT_PROFILES.map(p=>p.name);
+    (getProfiles()||[]).forEach(p=>{
+      if(!defaultNames.includes(p.name)) LS.set(`vocab_words_${p.id}`, []);
+    });
+    LS.set('vocab_user_cleanup_v1', true);
+  }
+
   updateStreak();
 }
 
