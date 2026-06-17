@@ -831,8 +831,24 @@ function saveMute(v){LS.set('vocab_mute',v)}
 function getPin(){return LS.get('vocab_pin','1234')}
 function getApiKey(){return LS.get('vocab_api_key','')}
 
+const MIA_SVG = `<svg viewBox="0 0 80 80" xmlns="http://www.w3.org/2000/svg">
+  <ellipse cx="40" cy="52" rx="21" ry="26" fill="#5C3317"/>
+  <circle cx="40" cy="40" r="22" fill="#FDBCB4"/>
+  <ellipse cx="40" cy="21" rx="22" ry="13" fill="#5C3317"/>
+  <ellipse cx="19" cy="42" rx="6" ry="13" fill="#5C3317"/>
+  <ellipse cx="61" cy="42" rx="6" ry="13" fill="#5C3317"/>
+  <circle cx="32" cy="38" r="5" fill="#1a1a1a"/>
+  <circle cx="48" cy="38" r="5" fill="#1a1a1a"/>
+  <circle cx="33.5" cy="36.5" r="1.5" fill="white"/>
+  <circle cx="49.5" cy="36.5" r="1.5" fill="white"/>
+  <circle cx="40" cy="44" r="1.8" fill="#e8a09a"/>
+  <path d="M33 49 Q40 55 47 49" stroke="#c0726a" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <circle cx="29" cy="47" r="5" fill="#ffb3a7" opacity="0.45"/>
+  <circle cx="51" cy="47" r="5" fill="#ffb3a7" opacity="0.45"/>
+</svg>`;
+
 const DEFAULT_PROFILES = [
-  {name:'Mia',     emoji:'👧', color:'#e74c3c'},
+  {name:'Mia',     emoji:'👧', color:'#e74c3c', avatarSvg: MIA_SVG},
   {name:'Profil 2',emoji:'🧒', color:'#3498db'},
   {name:'Profil 3',emoji:'👦', color:'#2ecc71'},
   {name:'Profil 4',emoji:'🧑', color:'#f39c12'},
@@ -998,13 +1014,15 @@ function renderProfilePicker(){
   const grid = document.getElementById('profileGrid');
   grid.innerHTML = '';
   profiles.forEach(p=>{
-    const initials = p.emoji || p.name.slice(0,2).toUpperCase();
+    const avatarInner = p.avatarSvg
+      ? `<div style="width:90px;height:90px">${p.avatarSvg}</div>`
+      : `<span style="font-size:52px;line-height:1">${p.emoji || p.name.slice(0,2).toUpperCase()}</span>`;
     const stars = LS.get(`vocab_stars_${p.id}`,0);
     const card = document.createElement('div');
     card.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;';
     card.innerHTML = `
       <div class="picker-avatar" style="background:${p.color}" onclick="selectProfileAndPlay('${p.id}')">
-        <span style="font-size:52px;line-height:1">${initials}</span>
+        ${avatarInner}
       </div>
       <div style="color:var(--text-light);font-weight:700;font-size:16px;text-align:center;max-width:100px">${p.name}</div>
       <div style="color:var(--gold);font-size:13px">⭐ ${stars}</div>`;
