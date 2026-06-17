@@ -1014,8 +1014,10 @@ function renderProfilePicker(){
   const grid = document.getElementById('profileGrid');
   grid.innerHTML = '';
   profiles.forEach(p=>{
-    const avatarInner = p.avatarSvg
-      ? `<div style="width:90px;height:90px">${p.avatarSvg}</div>`
+    const defProfile = DEFAULT_PROFILES.find(d=>d.name===p.name);
+    const svgIcon = (defProfile&&defProfile.avatarSvg) || p.avatarSvg;
+    const avatarInner = svgIcon
+      ? `<div style="width:90px;height:90px">${svgIcon}</div>`
       : `<span style="font-size:52px;line-height:1">${p.emoji || p.name.slice(0,2).toUpperCase()}</span>`;
     const stars = LS.get(`vocab_stars_${p.id}`,0);
     const card = document.createElement('div');
