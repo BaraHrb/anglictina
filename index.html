@@ -275,6 +275,8 @@ h1,h2,h3,.game-font{font-family:'Fredoka One',cursive}
 .levelup-banner{position:fixed;top:80px;left:50%;transform:translateX(-50%) scale(0.8);background:linear-gradient(135deg,#c8900a,#ffd700);color:#1a2744;padding:16px 32px;border-radius:16px;font-family:'Fredoka One',cursive;font-size:26px;z-index:700;opacity:0;pointer-events:none;transition:all .4s;box-shadow:0 8px 32px rgba(255,215,0,0.5);white-space:nowrap}
 .levelup-banner.show{opacity:1;transform:translateX(-50%) scale(1)}
 
+.picker-avatar{width:130px;height:130px;border-radius:16px;display:flex;align-items:center;justify-content:center;transition:all .2s;border:3px solid transparent}
+.picker-avatar:hover{transform:scale(1.08);border-color:rgba(255,255,255,0.6);box-shadow:0 8px 32px rgba(0,0,0,0.4)}
 @media(max-width:640px){
   .form-row,.form-row.three{grid-template-columns:1fr}
   .answers,.emoji-grid{grid-template-columns:1fr}
@@ -288,10 +290,33 @@ h1,h2,h3,.game-font{font-family:'Fredoka One',cursive}
 </head>
 <body>
 
-<button id="modeBtn" onclick="toggleMode()">👨‍👩‍👧 Rodič</button>
+<button id="modeBtn" onclick="toggleMode()" style="display:none">👨‍👩‍👧 Rodič</button>
+
+<!-- PROFILE PICKER SCREEN -->
+<div id="profilePickerScreen" style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:var(--blue-dark);flex-direction:column;padding:40px 20px">
+  <h1 class="game-font" style="font-size:36px;color:var(--gold);margin-bottom:8px">🌍 Výprava za slovíčky</h1>
+  <p style="color:var(--text-dim);margin-bottom:48px;font-size:18px">Kdo hraje?</p>
+  <div id="profileGrid" style="display:flex;flex-wrap:wrap;gap:28px;justify-content:center;max-width:800px"></div>
+  <button onclick="showAddProfileModal()" style="margin-top:40px;background:transparent;border:2px solid rgba(255,255,255,0.2);color:var(--text-dim);padding:12px 28px;border-radius:12px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:16px;font-weight:700;transition:all .2s" onmouseover="this.style.borderColor='rgba(255,255,255,0.5)';this.style.color='#fff'" onmouseout="this.style.borderColor='rgba(255,255,255,0.2)';this.style.color='var(--text-dim)'">+ Přidat profil</button>
+</div>
+
+<!-- ADD PROFILE MODAL -->
+<div class="modal-overlay hidden" id="addProfileModal">
+  <div class="modal-box">
+    <h3>➕ Nový profil</h3>
+    <div class="form-group" style="margin-bottom:16px">
+      <label>Jméno</label>
+      <input type="text" id="newProfileName" placeholder="Zadej jméno..." maxlength="20">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" onclick="closeAddProfileModal()">Zrušit</button>
+      <button class="btn btn-primary" onclick="confirmAddProfile()">Vytvořit</button>
+    </div>
+  </div>
+</div>
 
 <!-- CHILD SCREEN -->
-<div id="childScreen" class="screen active">
+<div id="childScreen" class="screen" style="display:none">
   <div class="child-header">
     <h1 class="game-font">🌍 Výprava za slovíčky</h1>
     <div class="profile-name-badge" id="profileNameBadge" onclick="cycleProfile()" style="cursor:pointer" title="Klikni pro přepnutí profilu">Mia</div>
@@ -806,43 +831,41 @@ function saveMute(v){LS.set('vocab_mute',v)}
 function getPin(){return LS.get('vocab_pin','1234')}
 function getApiKey(){return LS.get('vocab_api_key','')}
 
+const DEFAULT_PROFILES = [
+  {name:'Mia',     emoji:'👧', color:'#e74c3c'},
+  {name:'Profil 2',emoji:'🧒', color:'#3498db'},
+  {name:'Profil 3',emoji:'👦', color:'#2ecc71'},
+  {name:'Profil 4',emoji:'🧑', color:'#f39c12'},
+  {name:'Profil 5',emoji:'👩', color:'#9b59b6'},
+  {name:'Profil 6',emoji:'👨', color:'#1abc9c'},
+];
+
 function initData(){
   let profiles = getProfiles();
   if(!profiles){
-    // First run - create Mia profile and migrate any existing data
-    const terezkaid = 'profile_mia_'+Date.now();
-    profiles = [{id:terezkaid,name:'Mia',color:PROFILE_COLORS[0],createdAt:Date.now()}];
+    // First run - create 6 default profiles
+    profiles = DEFAULT_PROFILES.map((p,i)=>{
+      const id = 'profile_'+i+'_'+Date.now();
+      const words = DEFAULT_VOCAB.map((w,j)=>({...w,id:'w_'+j+'_'+id}));
+      LS.set(`vocab_words_${id}`, words);
+      LS.set(`vocab_stats_${id}`, {});
+      LS.set(`vocab_stars_${id}`, 0);
+      LS.set(`vocab_streak_${id}`, {count:0,lastDate:''});
+      return {id, name:p.name, emoji:p.emoji, color:p.color, createdAt:Date.now()+i};
+    });
     saveProfiles(profiles);
-    saveActiveProfileId(terezkaid);
-
-    // Migrate existing data to Mia profile
-    const existingWords = LS.get('vocab_words',null);
-    const existingStats = LS.get('vocab_stats',null);
-    const existingStars = LS.get('vocab_stars',null);
-    const existingStreak = LS.get('vocab_streak',null);
-    const existingSet = LS.get('vocab_set',null);
-
-    if(existingWords!==null){
-      LS.set(`vocab_words_${terezkaid}`,existingWords);
-    } else {
-      const words = DEFAULT_VOCAB.map((w,i)=>({...w,id:'w_'+i+'_'+Date.now()}));
-      LS.set(`vocab_words_${terezkaid}`,words);
-    }
-    if(existingStats!==null) LS.set(`vocab_stats_${terezkaid}`,existingStats);
-    if(existingStars!==null) LS.set(`vocab_stars_${terezkaid}`,existingStars);
-    if(existingStreak!==null) LS.set(`vocab_streak_${terezkaid}`,existingStreak);
-    if(existingSet!==null) LS.set(`vocab_set_${terezkaid}`,existingSet);
+    saveActiveProfileId(profiles[0].id);
   } else {
-    if(!getActiveProfileId()||!profiles.find(p=>p.id===getActiveProfileId())){
-      saveActiveProfileId(profiles[0].id);
-    }
-    // Rename any existing profile named Terezka/Terézka to Mia
+    // Rename any existing profile named Terezka to Mia
     let changed = false;
     profiles = profiles.map(p=>{
       if(p.name==='Terezka'||p.name==='Terézka'){changed=true;return {...p,name:'Mia'};}
       return p;
     });
     if(changed) saveProfiles(profiles);
+    if(!getActiveProfileId()||!profiles.find(p=>p.id===getActiveProfileId())){
+      saveActiveProfileId(profiles[0].id);
+    }
   }
 
   if(getWords()===null){
@@ -958,6 +981,73 @@ function cancelPin(){
   document.getElementById('modeBtn').style.display='block';
 }
 
+// ============================================================
+// PROFILE PICKER (Netflix style)
+// ============================================================
+function renderProfilePicker(){
+  const profiles = getProfiles()||[];
+  const grid = document.getElementById('profileGrid');
+  grid.innerHTML = '';
+  profiles.forEach(p=>{
+    const initials = p.emoji || p.name.slice(0,2).toUpperCase();
+    const stars = LS.get(`vocab_stars_${p.id}`,0);
+    const card = document.createElement('div');
+    card.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:12px;cursor:pointer;';
+    card.innerHTML = `
+      <div class="picker-avatar" style="background:${p.color}" onclick="selectProfileAndPlay('${p.id}')">
+        <span style="font-size:52px;line-height:1">${initials}</span>
+      </div>
+      <div style="color:var(--text-light);font-weight:700;font-size:16px;text-align:center;max-width:100px">${p.name}</div>
+      <div style="color:var(--gold);font-size:13px">⭐ ${stars}</div>`;
+    grid.appendChild(card);
+  });
+}
+
+function selectProfileAndPlay(id){
+  switchProfile(id);
+  document.getElementById('profilePickerScreen').style.display='none';
+  document.getElementById('childScreen').style.display='block';
+  document.getElementById('modeBtn').style.display='block';
+  renderChildUI();
+}
+
+function showProfilePicker(){
+  document.getElementById('childScreen').style.display='none';
+  document.getElementById('parentScreen').style.display='none';
+  document.getElementById('pinScreen').style.display='none';
+  document.getElementById('modeBtn').style.display='none';
+  renderProfilePicker();
+  document.getElementById('profilePickerScreen').style.display='flex';
+}
+
+function showAddProfileModal(){
+  document.getElementById('newProfileName').value='';
+  document.getElementById('addProfileModal').classList.remove('hidden');
+}
+function closeAddProfileModal(){
+  document.getElementById('addProfileModal').classList.add('hidden');
+}
+function confirmAddProfile(){
+  const name = document.getElementById('newProfileName').value.trim();
+  if(!name){showToast('Zadej jméno','error');return;}
+  const profiles = getProfiles()||[];
+  if(profiles.length>=10){showToast('Maximálně 10 profilů','error');return;}
+  const colors = ['#e74c3c','#3498db','#2ecc71','#f39c12','#9b59b6','#1abc9c','#e67e22','#e91e63','#00bcd4','#8bc34a'];
+  const emojis = ['👧','🧒','👦','🧑','👩','👨','🧒','👱','🧔','👵'];
+  const idx = profiles.length % colors.length;
+  const id = 'profile_'+Date.now()+'_'+Math.random().toString(36).slice(2);
+  const words = DEFAULT_VOCAB.map((w,i)=>({...w,id:'w_'+i+'_'+id}));
+  LS.set(`vocab_words_${id}`, words);
+  LS.set(`vocab_stats_${id}`, {});
+  LS.set(`vocab_stars_${id}`, 0);
+  LS.set(`vocab_streak_${id}`, {count:0,lastDate:''});
+  profiles.push({id, name, emoji:emojis[idx], color:colors[idx], createdAt:Date.now()});
+  saveProfiles(profiles);
+  closeAddProfileModal();
+  renderProfilePicker();
+  showToast('Profil vytvořen!','success');
+}
+
 function pinPress(d){
   if(pinBuffer.length>=4) return;
   pinBuffer+=d;
@@ -996,9 +1086,7 @@ function enterParent(){
 function lockParent(){
   inParent=false;
   document.getElementById('modeBtn').textContent='👨‍👩‍👧 Rodič';
-  document.getElementById('parentScreen').style.display='none';
-  document.getElementById('childScreen').style.display='block';
-  renderChildUI();
+  showProfilePicker();
 }
 
 function updateParentProfileHeader(){
@@ -2184,7 +2272,7 @@ function showToast(msg,type=''){
 // INIT
 // ============================================================
 initData();
-renderChildUI();
+renderProfilePicker();
 document.addEventListener('keydown',e=>{if(e.key==='Enter'&&document.getElementById('pinScreen').style.display!=='none')pinSubmit();});
 </script>
 </body>
