@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="cs">
 <head>
 <meta charset="UTF-8">
@@ -294,7 +294,7 @@ h1,h2,h3,.game-font{font-family:'Fredoka One',cursive}
 <div id="childScreen" class="screen active">
   <div class="child-header">
     <h1 class="game-font">🌍 Výprava za slovíčky</h1>
-    <div class="profile-name-badge" id="profileNameBadge" onclick="cycleProfile()" style="cursor:pointer" title="Klikni pro přepnutí profilu">Terézka</div>
+    <div class="profile-name-badge" id="profileNameBadge" onclick="cycleProfile()" style="cursor:pointer" title="Klikni pro přepnutí profilu">Mia</div>
     <div class="header-right">
       <button id="muteBtn" onclick="toggleMute()" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:#fff;padding:7px 14px;border-radius:10px;cursor:pointer;font-size:18px;transition:all .2s">🔊</button>
       <div class="streak-display" id="streakDisplay">🔥 1</div>
@@ -968,13 +968,13 @@ function getApiKey(){return LS.get('vocab_api_key','')}
 function initData(){
   let profiles = getProfiles();
   if(!profiles){
-    // First run - create Terézka profile and migrate any existing data
-    const terezkaid = 'profile_terezka_'+Date.now();
-    profiles = [{id:terezkaid,name:'Terezka',color:PROFILE_COLORS[0],createdAt:Date.now()}];
+    // First run - create Mia profile and migrate any existing data
+    const terezkaid = 'profile_mia_'+Date.now();
+    profiles = [{id:terezkaid,name:'Mia',color:PROFILE_COLORS[0],createdAt:Date.now()}];
     saveProfiles(profiles);
     saveActiveProfileId(terezkaid);
 
-    // Migrate existing data to Terézka profile
+    // Migrate existing data to Mia profile
     const existingWords = LS.get('vocab_words',null);
     const existingStats = LS.get('vocab_stats',null);
     const existingStars = LS.get('vocab_stars',null);
