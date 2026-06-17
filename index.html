@@ -1036,8 +1036,7 @@ function confirmAddProfile(){
   const emojis = ['👧','🧒','👦','🧑','👩','👨','🧒','👱','🧔','👵'];
   const idx = profiles.length % colors.length;
   const id = 'profile_'+Date.now()+'_'+Math.random().toString(36).slice(2);
-  const words = DEFAULT_VOCAB.map((w,i)=>({...w,id:'w_'+i+'_'+id}));
-  LS.set(`vocab_words_${id}`, words);
+  LS.set(`vocab_words_${id}`, []);
   LS.set(`vocab_stats_${id}`, {});
   LS.set(`vocab_stars_${id}`, 0);
   LS.set(`vocab_streak_${id}`, {count:0,lastDate:''});
