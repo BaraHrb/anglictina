@@ -995,6 +995,13 @@ function initData(){
     if(!getActiveProfileId()||!profiles.find(p=>p.id===getActiveProfileId())){
       saveActiveProfileId(profiles[0].id);
     }
+    // Rename any existing profile named Terezka/Terézka to Mia
+    let changed = false;
+    profiles = profiles.map(p=>{
+      if(p.name==='Terezka'||p.name==='Terézka'){changed=true;return {...p,name:'Mia'};}
+      return p;
+    });
+    if(changed) saveProfiles(profiles);
   }
 
   if(getWords()===null){
