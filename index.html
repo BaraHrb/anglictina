@@ -715,6 +715,46 @@ const DEFAULT_VOCAB = [
   {en:"ask and answer",cs:"ptej se a odpovídej",emoji:"💬",unit:"Classroom",category:"Commands",type:"verb",noSentence:true},
   {en:"match",cs:"spoj",emoji:"🔗",unit:"Classroom",category:"Commands",type:"verb",noSentence:true},
   {en:"play a game",cs:"zahraj si hru",emoji:"🎮",unit:"Classroom",category:"Commands",type:"verb",noSentence:true},
+
+  // LL Unit 2 - I want to / I don't want to
+  {en:"come",cs:"přijít",emoji:"🚶",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"work",cs:"pracovat",emoji:"💼",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"take a picture",cs:"fotografovat",emoji:"📸",unit:"LL Unit 2",category:"Verbs",type:"verb",noSentence:true},
+  {en:"play",cs:"hrát",emoji:"🎮",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"write",cs:"psát",emoji:"✏️",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"ride",cs:"jezdit",emoji:"🚲",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"swim",cs:"plavat",emoji:"🏊",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"run",cs:"běhat",emoji:"🏃",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"jump",cs:"skákat",emoji:"🦘",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"fly",cs:"létat",emoji:"✈️",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"read",cs:"číst",emoji:"📖",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"speak",cs:"mluvit",emoji:"💬",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"sing",cs:"zpívat",emoji:"🎵",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"dance",cs:"tancovat",emoji:"💃",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"eat",cs:"jíst",emoji:"🍽️",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"cook",cs:"vařit",emoji:"🍳",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"drink",cs:"pít",emoji:"🥤",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+  {en:"make",cs:"vyrábět",emoji:"🔧",unit:"LL Unit 2",category:"Verbs",type:"verb"},
+
+  // Comparatives - Stupňování přídavných jmen
+  {en:"cold",cs:"studený",emoji:"🥶",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"young",cs:"mladý",emoji:"👶",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"old",cs:"starý",emoji:"👴",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"fast",cs:"rychlý",emoji:"⚡",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"hot",cs:"teplý",emoji:"🔥",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"big",cs:"velký",emoji:"🐘",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"thin",cs:"tenký",emoji:"📏",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"slim",cs:"hubený",emoji:"🤸",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"happy",cs:"veselý",emoji:"😊",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"pretty",cs:"hezký",emoji:"🌸",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"lazy",cs:"líný",emoji:"😴",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"beautiful",cs:"krásný",emoji:"✨",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"friendly",cs:"přátelský",emoji:"🤝",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"expensive",cs:"drahý",emoji:"💰",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"interesting",cs:"zajímavý",emoji:"🤔",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"good",cs:"dobrý",emoji:"👍",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"bad",cs:"špatný",emoji:"👎",unit:"Comparatives",category:"Adjectives",type:"adjective"},
+  {en:"far",cs:"daleký",emoji:"🗺️",unit:"Comparatives",category:"Adjectives",type:"adjective"},
 ];
 
 // Rod podstatných jmen (ma=mužský živý, mi=mužský neživý, f=ženský, n=střední, pl=množné)
@@ -973,7 +1013,7 @@ function initData(){
 
   // Vocab version — bump this number whenever DEFAULT_VOCAB is replaced wholesale.
   // All profiles will have their word list reset to the new DEFAULT_VOCAB.
-  const VOCAB_VERSION = 2;
+  const VOCAB_VERSION = 3;
   const storedVersion = LS.get('vocab_version', 0);
   const allProfiles = getProfiles()||[];
   if(storedVersion < VOCAB_VERSION){
