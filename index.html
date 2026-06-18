@@ -853,6 +853,14 @@ const MIA_EXTRA_VOCAB = [
   {en:"tooth",cs:"zub",cs_acc:"zub",emoji:"🦷",unit:"Body",category:"Body",type:"noun"},
   {en:"finger",cs:"prst",cs_acc:"prst",emoji:"👆",unit:"Body",category:"Body",type:"noun"},
   {en:"knee",cs:"koleno",cs_acc:"koleno",emoji:"🦵",unit:"Body",category:"Body",type:"noun"},
+  // Possessive pronouns
+  {en:"my",cs:"můj/moje",emoji:"👤",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"můj",f:"moje",n:"moje",pl:"moje"}},
+  {en:"your",cs:"tvůj/tvoje",emoji:"👉",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"tvůj",f:"tvoje",n:"tvoje",pl:"tvoje"}},
+  {en:"his",cs:"jeho",emoji:"👦",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"jeho",f:"jeho",n:"jeho",pl:"jeho"}},
+  {en:"her",cs:"její",emoji:"👧",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"její",f:"její",n:"její",pl:"její"}},
+  {en:"its",cs:"jeho",emoji:"🐾",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"jeho",f:"jeho",n:"jeho",pl:"jeho"}},
+  {en:"our",cs:"náš/naše",emoji:"👨‍👩‍👧",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"náš",f:"naše",n:"naše",pl:"naše"}},
+  {en:"their",cs:"jejich",emoji:"👥",unit:"Pronouns",category:"Grammar",type:"pronoun",cs_forms:{m:"jejich",f:"jejich",n:"jejich",pl:"jejich"}},
 ];
 
 // Rod podstatných jmen (ma=mužský živý, mi=mužský neživý, f=ženský, n=střední, pl=množné)
@@ -2011,7 +2019,7 @@ function pickExerciseType(word){
   const adjNoun=hasAdjNounSupport(word,session.pool);
   const types=adjNoun?[1,3,5,4,4,7,7,8,8,9,9,10,10,11,11]:[1,3,5,4,4,7,7,8,8,11,11];
   const validTypes=types.filter(t=>{
-    if([4,7,8].includes(t)) return (word.type==='noun'||word.type==='verb'||word.type==='adjective')&&!word.noSentence;
+    if([4,7,8].includes(t)) return (word.type==='noun'||word.type==='verb'||word.type==='adjective'||word.type==='pronoun')&&!word.noSentence;
     if([9,10].includes(t)) return adjNoun;
     if(t===3&&muted) return false;
     return true;
@@ -2220,6 +2228,29 @@ function pickAdjTemplate(word){
   return pool[Math.floor(Math.random()*pool.length)];
 }
 
+const PRONOUN_TEMPLATES=[
+  {tiles:(pr,noun)=>["This","is",pr,`${noun}.`],     cs:(csPr,csNoun)=>`Tohle je ${csPr} ${csNoun}.`},
+  {tiles:(pr,noun)=>["This","is","not",pr,`${noun}.`], cs:(csPr,csNoun)=>`Tohle není ${csPr} ${csNoun}.`},
+  {tiles:(pr,noun)=>[pr,`${noun}`,"is","big."],       cs:(csPr,csNoun)=>`${csPr[0].toUpperCase()+csPr.slice(1)} ${csNoun} je velký.`},
+  {tiles:(pr,noun)=>[pr,`${noun}`,"is","here."],      cs:(csPr,csNoun)=>`${csPr[0].toUpperCase()+csPr.slice(1)} ${csNoun} je tady.`},
+  {tiles:(pr,noun)=>["I","like",pr,`${noun}.`],       cs:(csPr,csNoun)=>`Líbí se mi ${csPr} ${csNoun}.`},
+];
+
+function pickPronounNoun(pool){
+  const nouns=pool.filter(w=>w.type==='noun'&&!w.noSentence&&w.en.length<10&&!w.en.includes(' '));
+  if(!nouns.length) return null;
+  return nouns[Math.floor(Math.random()*nouns.length)];
+}
+
+function makePronounSentence(pronoun, pool){
+  const noun=pickPronounNoun(pool);
+  if(!noun) return null;
+  const tpl=PRONOUN_TEMPLATES[Math.floor(Math.random()*PRONOUN_TEMPLATES.length)];
+  const gender=getNounGender(noun)||'f';
+  const csPr=(pronoun.cs_forms&&pronoun.cs_forms[gender])||pronoun.cs.split('/')[0];
+  return {tiles:tpl.tiles(pronoun.en,noun.en), cs:tpl.cs(csPr,noun.cs)};
+}
+
 const ADJ_NOUN_TEMPLATES=[
   {tiles:(art,adj,noun)=>art?["I","can","see",art,adj,`${noun}.`]:["I","can","see",adj,`${noun}.`], cs:(a,n)=>`Vidím ${a} ${n}.`},
   {tiles:(art,adj,noun)=>art?["I","can't","see",art,adj,`${noun}.`]:["I","can't","see",adj,`${noun}.`], cs:(a,n)=>`Nevidím ${a} ${n}.`},
@@ -2248,8 +2279,13 @@ function hasAdjNounSupport(word,pool){
 function renderExType4(c,word){
   const isVerb=word.type==='verb';
   const isAdj=word.type==='adjective';
+  const isPron=word.type==='pronoun';
   let tpl,correctTiles,czHint;
-  if(isVerb){
+  if(isPron){
+    const ps=makePronounSentence(word,session.pool);
+    if(!ps){correctTiles=['This','is',word.en+'.'];czHint=`Tohle je ${word.cs.split('/')[0]}.`;}
+    else{correctTiles=ps.tiles;czHint=ps.cs;}
+  } else if(isVerb){
     tpl=VERB_TEMPLATES[Math.floor(Math.random()*VERB_TEMPLATES.length)];
     correctTiles=tpl.tiles(word.en);
     czHint=tpl.cs(word.cs_verb||word.cs);
@@ -2288,6 +2324,11 @@ function answerType5(btn,answerId,correctId){
 function makeSentencePair(word){
   const isVerb=word.type==='verb';
   const isAdj=word.type==='adjective';
+  if(word.type==='pronoun'){
+    const ps=makePronounSentence(word,session.pool||[]);
+    if(ps) return {en:ps.tiles.join(' '),cs:ps.cs};
+    return {en:'This is '+word.en+'.',cs:'Tohle je '+word.cs.split('/')[0]+'.'};
+  }
   if(isVerb){
     const tpl=VERB_TEMPLATES[Math.floor(Math.random()*VERB_TEMPLATES.length)];
     return {en:tpl.tiles(word.en).join(' '), cs:tpl.cs(word.cs_verb||word.cs)};
