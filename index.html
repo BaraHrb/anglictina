@@ -757,6 +757,104 @@ const DEFAULT_VOCAB = [
   {en:"far",cs:"daleký",emoji:"🗺️",unit:"Comparatives",category:"Adjectives",type:"adjective"},
 ];
 
+// Slovíčka pouze pro profil Mia
+const MIA_EXTRA_VOCAB = [
+  // Hračky (Toys)
+  {en:"bike",cs:"kolo",cs_acc:"kolo",emoji:"🚲",unit:"Toys",category:"Things",type:"noun"},
+  {en:"computer",cs:"počítač",cs_acc:"počítač",emoji:"💻",unit:"Toys",category:"Things",type:"noun"},
+  {en:"camera",cs:"fotoaparát",cs_acc:"fotoaparát",emoji:"📷",unit:"Toys",category:"Things",type:"noun"},
+  {en:"doll",cs:"panenka",cs_acc:"panenku",emoji:"🪆",unit:"Toys",category:"Things",type:"noun"},
+  {en:"game",cs:"hra",cs_acc:"hru",emoji:"🎮",unit:"Toys",category:"Things",type:"noun"},
+  {en:"helicopter",cs:"vrtulník",cs_acc:"vrtulník",emoji:"🚁",unit:"Toys",category:"Things",type:"noun"},
+  {en:"monster",cs:"příšera",cs_acc:"příšeru",emoji:"👹",unit:"Toys",category:"Things",type:"noun"},
+  {en:"lorry",cs:"nákladní auto",cs_acc:"nákladní auto",emoji:"🚛",unit:"Toys",category:"Things",type:"noun"},
+  {en:"kite",cs:"drak",cs_acc:"draka",emoji:"🪁",unit:"Toys",category:"Things",type:"noun"},
+  {en:"train",cs:"vlak",cs_acc:"vlak",emoji:"🚂",unit:"Toys",category:"Things",type:"noun"},
+  // Rodina (Family)
+  {en:"mother",cs:"maminka",cs_acc:"maminku",emoji:"👩",unit:"Family",category:"People",type:"noun"},
+  {en:"father",cs:"tatínek",cs_acc:"tatínka",emoji:"👨",unit:"Family",category:"People",type:"noun"},
+  {en:"brother",cs:"bratr",cs_acc:"bratra",emoji:"👦",unit:"Family",category:"People",type:"noun"},
+  {en:"sister",cs:"sestra",cs_acc:"sestru",emoji:"👧",unit:"Family",category:"People",type:"noun"},
+  {en:"son",cs:"syn",cs_acc:"syna",emoji:"🧒",unit:"Family",category:"People",type:"noun"},
+  {en:"daughter",cs:"dcera",cs_acc:"dceru",emoji:"👧",unit:"Family",category:"People",type:"noun"},
+  {en:"uncle",cs:"strýc",cs_acc:"strýce",emoji:"🧑",unit:"Family",category:"People",type:"noun"},
+  {en:"grandson",cs:"vnuk",cs_acc:"vnuka",emoji:"👦",unit:"Family",category:"People",type:"noun"},
+  {en:"granddaughter",cs:"vnučka",cs_acc:"vnučku",emoji:"👧",unit:"Family",category:"People",type:"noun"},
+  {en:"parents",cs:"rodiče",emoji:"👨‍👩‍👧",unit:"Family",category:"People",type:"noun",plural:true,noSentence:true},
+  // Sporty a koníčky (Sports & Hobbies)
+  {en:"badminton",cs:"badminton",emoji:"🏸",unit:"Sports",category:"Sports",type:"noun",noSentence:true},
+  {en:"baseball",cs:"baseball",emoji:"⚾",unit:"Sports",category:"Sports",type:"noun",noSentence:true},
+  {en:"hockey",cs:"hokej",emoji:"🏒",unit:"Sports",category:"Sports",type:"noun",noSentence:true},
+  {en:"table tennis",cs:"stolní tenis",emoji:"🏓",unit:"Sports",category:"Sports",type:"noun",noSentence:true},
+  {en:"paint",cs:"malovat",emoji:"🎨",unit:"Sports",category:"Hobbies",type:"verb"},
+  // Doma (Home)
+  {en:"balcony",cs:"balkon",cs_acc:"balkon",emoji:"🏠",unit:"Home",category:"Places",type:"noun"},
+  {en:"basement",cs:"sklep",cs_acc:"sklep",emoji:"🏚️",unit:"Home",category:"Places",type:"noun"},
+  {en:"lift",cs:"výtah",cs_acc:"výtah",emoji:"🛗",unit:"Home",category:"Things",type:"noun"},
+  {en:"stairs",cs:"schody",emoji:"🪜",unit:"Home",category:"Things",type:"noun",plural:true,noSentence:true},
+  {en:"flat",cs:"byt",cs_acc:"byt",emoji:"🏢",unit:"Home",category:"Places",type:"noun"},
+  {en:"mirror",cs:"zrcadlo",cs_acc:"zrcadlo",emoji:"🪞",unit:"Home",category:"Things",type:"noun"},
+  {en:"sofa",cs:"gauč",cs_acc:"gauč",emoji:"🛋️",unit:"Home",category:"Things",type:"noun"},
+  {en:"lamp",cs:"lampička",cs_acc:"lampičku",emoji:"💡",unit:"Home",category:"Things",type:"noun"},
+  {en:"clock",cs:"hodiny",emoji:"🕐",unit:"Home",category:"Things",type:"noun",plural:true},
+  {en:"mat",cs:"rohožka",cs_acc:"rohožku",emoji:"🚪",unit:"Home",category:"Things",type:"noun"},
+  // Denní rutina (Daily Routine)
+  {en:"wake up",cs:"probudit se",emoji:"⏰",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"get up",cs:"vstát",emoji:"🛏️",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"have a shower",cs:"sprchovat se",emoji:"🚿",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"get dressed",cs:"obléknout se",emoji:"👕",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"get undressed",cs:"svléknout se",emoji:"🛁",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"catch the bus",cs:"jít na autobus",emoji:"🚌",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"go to bed",cs:"jít spát",emoji:"🌙",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  {en:"wash my face",cs:"umýt si obličej",emoji:"🧼",unit:"Daily Routine",category:"Verbs",type:"verb",noSentence:true},
+  // Dny v týdnu (Days of the Week)
+  {en:"Monday",cs:"pondělí",emoji:"📅",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"Tuesday",cs:"úterý",emoji:"📅",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"Wednesday",cs:"středa",emoji:"📅",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"Thursday",cs:"čtvrtek",emoji:"📅",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"Friday",cs:"pátek",emoji:"📅",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"Saturday",cs:"sobota",emoji:"🎉",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"Sunday",cs:"neděle",emoji:"☀️",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  {en:"weekend",cs:"víkend",emoji:"🏖️",unit:"Days",category:"Time",type:"noun",noSentence:true},
+  // Měsíce (Months)
+  {en:"January",cs:"leden",emoji:"❄️",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"February",cs:"únor",emoji:"💝",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"March",cs:"březen",emoji:"🌱",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"April",cs:"duben",emoji:"🌸",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"May",cs:"květen",emoji:"🌺",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"June",cs:"červen",emoji:"☀️",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"July",cs:"červenec",emoji:"🏖️",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"August",cs:"srpen",emoji:"🌻",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"September",cs:"září",emoji:"🍂",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"October",cs:"říjen",emoji:"🎃",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"November",cs:"listopad",emoji:"🍁",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  {en:"December",cs:"prosinec",emoji:"⛄",unit:"Months",category:"Time",type:"noun",noSentence:true},
+  // Emoce (Emotions)
+  {en:"angry",cs:"naštvaný",emoji:"😠",unit:"Emotions",category:"Adjectives",type:"adjective"},
+  {en:"crazy",cs:"bláznivý",emoji:"🤪",unit:"Emotions",category:"Adjectives",type:"adjective"},
+  {en:"sad",cs:"smutný",emoji:"😢",unit:"Emotions",category:"Adjectives",type:"adjective"},
+  {en:"in love",cs:"zamilovaný",emoji:"😍",unit:"Emotions",category:"Adjectives",type:"adjective",noSentence:true},
+  {en:"surprised",cs:"překvapený",emoji:"😲",unit:"Emotions",category:"Adjectives",type:"adjective"},
+  {en:"sleepy",cs:"ospalý",emoji:"😴",unit:"Emotions",category:"Adjectives",type:"adjective"},
+  // Části těla (Body Parts)
+  {en:"head",cs:"hlava",cs_acc:"hlavu",emoji:"🧠",unit:"Body",category:"Body",type:"noun"},
+  {en:"eye",cs:"oko",cs_acc:"oko",emoji:"👁️",unit:"Body",category:"Body",type:"noun"},
+  {en:"ear",cs:"ucho",cs_acc:"ucho",emoji:"👂",unit:"Body",category:"Body",type:"noun"},
+  {en:"nose",cs:"nos",cs_acc:"nos",emoji:"👃",unit:"Body",category:"Body",type:"noun"},
+  {en:"mouth",cs:"ústa",emoji:"👄",unit:"Body",category:"Body",type:"noun",plural:true,noSentence:true},
+  {en:"shoulder",cs:"rameno",cs_acc:"rameno",emoji:"🤷",unit:"Body",category:"Body",type:"noun"},
+  {en:"stomach",cs:"žaludek",cs_acc:"žaludek",emoji:"🫃",unit:"Body",category:"Body",type:"noun"},
+  {en:"back",cs:"záda",emoji:"🔙",unit:"Body",category:"Body",type:"noun",plural:true,noSentence:true},
+  {en:"leg",cs:"noha",cs_acc:"nohu",emoji:"🦵",unit:"Body",category:"Body",type:"noun"},
+  {en:"foot",cs:"chodidlo",cs_acc:"chodidlo",emoji:"🦶",unit:"Body",category:"Body",type:"noun"},
+  {en:"arm",cs:"paže",cs_acc:"paži",emoji:"💪",unit:"Body",category:"Body",type:"noun"},
+  {en:"hand",cs:"ruka",cs_acc:"ruku",emoji:"✋",unit:"Body",category:"Body",type:"noun"},
+  {en:"hair",cs:"vlasy",emoji:"💇",unit:"Body",category:"Body",type:"noun",plural:true,noSentence:true},
+  {en:"tooth",cs:"zub",cs_acc:"zub",emoji:"🦷",unit:"Body",category:"Body",type:"noun"},
+  {en:"finger",cs:"prst",cs_acc:"prst",emoji:"👆",unit:"Body",category:"Body",type:"noun"},
+  {en:"knee",cs:"koleno",cs_acc:"koleno",emoji:"🦵",unit:"Body",category:"Body",type:"noun"},
+];
+
 // Rod podstatných jmen (ma=mužský živý, mi=mužský neživý, f=ženský, n=střední, pl=množné)
 const NOUN_GENDERS = {
   'train':'mi','plane':'n','bus':'mi','lorry':'n','motorbike':'f','taxi':'n',
@@ -1034,6 +1132,20 @@ function initData(){
       if(!defaultNames.includes(p.name)) LS.set(`vocab_words_${p.id}`, []);
     });
     LS.set('vocab_user_cleanup_v1', true);
+  }
+
+  // Přidat extra slovíčka pouze Mia
+  if(!LS.get('vocab_mia_extra_v1', false)){
+    const miaProfile=(getProfiles()||[]).find(p=>p.name==='Mia');
+    if(miaProfile){
+      const existing=LS.get(`vocab_words_${miaProfile.id}`,[]);
+      const existingEn=new Set(existing.map(w=>w.en.toLowerCase()));
+      const toAdd=MIA_EXTRA_VOCAB
+        .filter(w=>!existingEn.has(w.en.toLowerCase()))
+        .map((w,i)=>({...w,id:'mia_v1_'+i}));
+      LS.set(`vocab_words_${miaProfile.id}`,[...existing,...toAdd]);
+    }
+    LS.set('vocab_mia_extra_v1',true);
   }
 
   updateStreak();
