@@ -2287,17 +2287,30 @@ function checkSentence(){
   if(!st||st.placed.length===0){showToast('Nejdříve poskladej větu!','error');return;}
   const isCorrect=st.placed.length===st.correct.length&&st.placed.every((t,i)=>t===st.correct[i]);
   const aa=document.getElementById('answerArea');
-  document.getElementById('checkBtn').disabled=true;
+  const btn=document.getElementById('checkBtn');
+  btn.disabled=true;
   document.querySelectorAll('#tileArea .tile').forEach(t=>t.disabled=true);
   document.querySelectorAll('#answerArea .tile').forEach(t=>t.onclick=null);
   aa.classList.add(isCorrect?'correct-border':'wrong-border');
-  if(!isCorrect){
-    const hint=document.createElement('span');
-    hint.style.cssText='display:block;color:rgba(255,255,255,0.6);font-size:15px;margin-top:8px;width:100%';
-    hint.textContent='Správná věta: '+st.correct.join(' ');
-    aa.appendChild(hint);
+  if(isCorrect){
+    handleAnswer(true,()=>nextRound());
+  } else {
+    recordAnswer(session.currentWord.id,false);
+    session.consecutiveCorrect=0;
+    document.getElementById('sessionStreak').textContent='';
+    playWrongSound();
+    showFeedback(false,'✗');
+    setTimeout(hideFeedback,900);
+    const correctBox=document.createElement('div');
+    correctBox.style.cssText='margin-top:10px;background:rgba(76,175,80,0.13);border:1.5px solid #4CAF50;border-radius:10px;padding:10px 14px;width:100%;animation:exSlideIn .25s ease both';
+    correctBox.innerHTML='<div style="font-size:11px;color:#a5d6a7;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px">✅ Správná věta:</div>'
+      +'<div style="font-family:\'Baloo 2\',cursive;font-size:22px;color:#fff;line-height:1.3">'+esc(st.correct.join(' '))+'</div>';
+    aa.appendChild(correctBox);
+    btn.textContent='Už vím ✓';
+    btn.style.cssText='display:block;margin:12px auto 0;background:linear-gradient(135deg,#2a7a50,#3aaa6a);color:#fff;font-family:\'Baloo 2\',cursive;font-size:20px;padding:14px 36px;border-radius:14px;border:none;cursor:pointer;transition:all .2s';
+    btn.disabled=false;
+    btn.onclick=()=>{btn.disabled=true;nextRound();};
   }
-  handleAnswer(isCorrect,()=>nextRound());
 }
 
 function setupRetry(selector,correctEl,wrongEl){
