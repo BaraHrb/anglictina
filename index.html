@@ -250,6 +250,70 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
 .toast.error{background:#c62828}
 .toast.success{background:#2e7d32}
 
+/* FLASHCARD */
+.flashcard-scene{perspective:900px;width:100%;max-width:340px;margin:0 auto 14px;height:200px}
+.flashcard{width:100%;height:100%;position:relative;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,0,.2,1);cursor:pointer}
+.flashcard.flipped{transform:rotateY(180deg)}
+.flashcard-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:24px}
+.flashcard-front{background:linear-gradient(135deg,#2e4a8a,#4a6ac8);border:2px solid rgba(255,255,255,0.22)}
+.flashcard-back{background:linear-gradient(135deg,#1a5c3a,#2e8a5c);border:2px solid rgba(255,255,255,0.22);transform:rotateY(180deg)}
+.flashcard-emoji{font-size:56px;line-height:1;display:block}
+.flashcard-word{font-family:'Baloo 2',cursive;font-size:36px;color:#fff;text-align:center;line-height:1.1}
+.flashcard-hint{font-size:12px;color:rgba(255,255,255,0.5);font-weight:700;text-transform:uppercase;letter-spacing:1px}
+.flashcard-cs{font-family:'Baloo 2',cursive;font-size:30px;color:#a5d6a7;text-align:center}
+.flashcard-tap-hint{font-size:13px;color:rgba(255,255,255,0.35);text-align:center;margin-bottom:4px}
+.flashcard-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:340px;margin:0 auto 4px}
+.fc-btn-no{background:rgba(231,76,60,0.15);border:2px solid rgba(231,76,60,0.6);color:#ef9a9a;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer;transition:all .2s}
+.fc-btn-yes{background:rgba(76,175,80,0.15);border:2px solid rgba(76,175,80,0.6);color:#a5d6a7;font-family:'Nunito',sans-serif;font-size:17px;font-weight:800;padding:14px;border-radius:14px;cursor:pointer;transition:all .2s}
+.fc-btn-no:hover{background:rgba(231,76,60,0.3);transform:scale(1.03)}
+.fc-btn-yes:hover{background:rgba(76,175,80,0.3);transform:scale(1.03)}
+.fc-show-hint{display:block;text-align:center;margin-bottom:10px;font-size:14px;color:rgba(255,255,255,0.4)}
+
+/* WORD INTRO SCREEN */
+#wordIntroScreen{display:none;padding-bottom:32px}
+.word-intro-header{text-align:center;padding:24px 20px 12px}
+.word-intro-title{font-family:'Baloo 2',cursive;font-size:26px;color:var(--gold);margin-bottom:4px}
+.word-intro-sub{font-size:14px;color:var(--text-dim)}
+.word-intro-grid{display:flex;flex-direction:column;gap:10px;padding:0 20px;max-width:480px;margin:0 auto}
+.word-intro-card{background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);border-radius:16px;padding:14px 18px;display:flex;align-items:center;gap:14px}
+.word-intro-card:nth-child(1){animation:slideInCard .3s .05s ease both}
+.word-intro-card:nth-child(2){animation:slideInCard .3s .15s ease both}
+.word-intro-card:nth-child(3){animation:slideInCard .3s .25s ease both}
+.word-intro-card:nth-child(4){animation:slideInCard .3s .35s ease both}
+@keyframes slideInCard{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+.word-intro-emoji{font-size:44px;flex-shrink:0;width:52px;text-align:center}
+.word-intro-en{font-family:'Baloo 2',cursive;font-size:21px;color:#fff;line-height:1.2}
+.word-intro-cs{font-size:15px;color:var(--gold);font-weight:700}
+.word-intro-action{text-align:center;padding:20px 20px 0}
+
+/* DAILY GOAL */
+.daily-goal-bar{background:rgba(255,255,255,0.05);border:1.5px solid rgba(255,255,255,0.1);border-radius:14px;padding:12px 16px;margin-bottom:16px;display:flex;align-items:center;gap:12px}
+.daily-goal-icon{font-size:26px;flex-shrink:0}
+.daily-goal-text{flex:1}
+.daily-goal-label{font-size:11px;color:var(--text-dim);font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:5px}
+.daily-goal-track{height:7px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden}
+.daily-goal-fill{height:100%;background:linear-gradient(90deg,#4CAF50,#8BC34A);border-radius:4px;transition:width .6s}
+.daily-goal-done .daily-goal-fill{background:linear-gradient(90deg,var(--gold-dark),var(--gold))}
+.daily-goal-count{font-family:'Baloo 2',cursive;font-size:18px;color:var(--gold);flex-shrink:0;min-width:36px;text-align:right}
+
+/* EXERCISE CARD COLORS PER TYPE */
+@keyframes exSlideIn{from{opacity:0;transform:translateY(12px) scale(0.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+.exercise-card{animation:exSlideIn .22s ease both}
+.exercise-type-label{border-radius:8px;padding:6px 12px;text-align:left;display:inline-block;margin-bottom:14px}
+.ex-type-translate .exercise-type-label{background:rgba(74,106,200,0.25);border-left:3px solid #4a6ac8}
+.ex-type-listen .exercise-type-label{background:rgba(138,74,200,0.25);border-left:3px solid #8a4ac8}
+.ex-type-emoji .exercise-type-label{background:rgba(200,122,74,0.25);border-left:3px solid #c87a4a}
+.ex-type-sentence .exercise-type-label{background:rgba(74,200,122,0.2);border-left:3px solid #4ac87a}
+.ex-type-flash .exercise-type-label{background:rgba(200,200,74,0.2);border-left:3px solid #c8c84a}
+
+/* RESULTS XP BAR */
+.results-xp-wrap{margin:16px 0 8px}
+.results-xp-label{font-size:13px;color:var(--text-dim);margin-bottom:6px;font-weight:700}
+.results-xp-bar{height:12px;background:rgba(255,255,255,0.1);border-radius:6px;overflow:hidden}
+.results-xp-fill{height:100%;background:linear-gradient(90deg,var(--gold-dark),var(--gold));border-radius:6px;width:0%;transition:width 1s .3s}
+.results-streak-msg{font-size:16px;color:#ff7043;font-weight:700;margin:8px 0}
+.results-daily{font-size:14px;color:var(--text-dim);margin-bottom:20px}
+
 .home-btn{background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:#fff;padding:8px 16px;border-radius:10px;cursor:pointer;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;transition:all .2s}
 .home-btn:hover{background:rgba(255,255,255,0.18)}
 
@@ -334,6 +398,14 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
   <div id="mapScreen">
     <div class="map-title">🚲 Tvoje výprava</div>
     <div class="map-subtitle">Sbírej hvězdičky a jeď dál po pohádkové cestě!</div>
+    <div class="daily-goal-bar" id="dailyGoalBar">
+      <div class="daily-goal-icon">🎯</div>
+      <div class="daily-goal-text">
+        <div class="daily-goal-label">Dnešní cíl</div>
+        <div class="daily-goal-track"><div class="daily-goal-fill" id="dailyGoalFill" style="width:0%"></div></div>
+      </div>
+      <div class="daily-goal-count" id="dailyGoalCount">0/5</div>
+    </div>
     <div id="worldMap"></div>
     <div id="noWordsMsg" style="display:none" class="empty-words">
       <div class="empty-icon">📚</div>
@@ -361,15 +433,32 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
 
   <div id="resultsScreen" style="display:none">
     <div class="results-card">
-      <div class="results-title game-font">🎉 Výprava dokončena!</div>
+      <div class="results-title game-font" id="resultsTitle">🎉 Výprava dokončena!</div>
       <div class="results-stars" id="resultsStars">⭐</div>
       <div class="results-earned" id="resultsEarned">+5 hvězdiček</div>
       <div class="results-label">Celkem: <span id="resultsTotalStars">0</span> hvězdiček</div>
+      <div class="results-streak-msg" id="resultsStreakMsg" style="display:none"></div>
+      <div class="results-xp-wrap">
+        <div class="results-xp-label">✨ ZKUŠENOSTI</div>
+        <div class="results-xp-bar"><div class="results-xp-fill" id="resultsXpFill"></div></div>
+      </div>
       <div class="results-score" id="resultsScore"></div>
+      <div class="results-daily" id="resultsDaily"></div>
       <div class="results-actions">
-        <button class="btn btn-primary" onclick="startSession()" style="font-size:18px;padding:14px 28px">🔄 Hrát znovu</button>
+        <button class="btn btn-primary" onclick="launchWordIntro()" style="font-size:18px;padding:14px 28px">🔄 Hrát znovu</button>
         <button class="btn btn-secondary" onclick="goHome()" style="font-size:18px;padding:14px 28px">🗺️ Zpět na mapu</button>
       </div>
+    </div>
+  </div>
+
+  <div id="wordIntroScreen" style="display:none">
+    <div class="word-intro-header">
+      <div class="word-intro-title">📖 Dnešní slovíčka</div>
+      <div class="word-intro-sub">Projdi si je a pak je procvičíme!</div>
+    </div>
+    <div class="word-intro-grid" id="wordIntroGrid"></div>
+    <div class="word-intro-action">
+      <button class="start-btn" onclick="startSessionFromIntro()" style="font-size:20px;padding:14px 36px">🚲 Pojďme na to!</button>
     </div>
   </div>
 </div>
@@ -1574,6 +1663,7 @@ function renderChildUI(){
   updateMuteBtn();
   renderWorldMap();
   renderSetSelector();
+  renderDailyGoal();
   const words=getWords()||[];
   document.getElementById('noWordsMsg').style.display=words.length===0?'block':'none';
   document.getElementById('startBtn').style.display=words.length<4?'none':'block';
@@ -1725,6 +1815,7 @@ function showChildSection(sec){
   document.getElementById('mapScreen').style.display=sec==='map'?'block':'none';
   document.getElementById('exerciseScreen').style.display=sec==='exercise'?'block':'none';
   document.getElementById('resultsScreen').style.display=sec==='results'?'flex':'none';
+  document.getElementById('wordIntroScreen').style.display=sec==='wordIntro'?'block':'none';
 }
 
 function goHome(){showChildSection('map');renderChildUI();}
@@ -1759,7 +1850,7 @@ function pickExerciseType(word){
   if(ap&&ap.mode==='beginner') return 6;
   const muted=getMute();
   const adjNoun=hasAdjNounSupport(word,session.pool);
-  const types=adjNoun?[1,3,5,4,4,7,7,8,8,9,9,10,10]:[1,3,5,4,4,7,7,8,8];
+  const types=adjNoun?[1,3,5,4,4,7,7,8,8,9,9,10,10,11,11]:[1,3,5,4,4,7,7,8,8,11,11];
   const validTypes=types.filter(t=>{
     if([4,7,8].includes(t)) return (word.type==='noun'||word.type==='verb'||word.type==='adjective')&&!word.noSentence;
     if([9,10].includes(t)) return adjNoun;
@@ -1770,10 +1861,25 @@ function pickExerciseType(word){
   return validTypes[Math.floor(Math.random()*validTypes.length)];
 }
 
-function startSession(){
+function launchWordIntro(){
   const pool=buildWordPool();
   if(pool.length<4){showToast('Potřebuješ alespoň 4 slovíčka','error');return;}
   session={pool,round:0,total:10,correct:0,starsEarned:0,consecutiveCorrect:0,currentWord:null};
+  const preview=shuffle([...pool]).slice(0,4);
+  const grid=document.getElementById('wordIntroGrid');
+  grid.innerHTML=preview.map(w=>`
+    <div class="word-intro-card">
+      <div class="word-intro-emoji">${w.emoji||'📚'}</div>
+      <div>
+        <div class="word-intro-en">${esc(w.en)}</div>
+        <div class="word-intro-cs">${esc(w.cs)}</div>
+      </div>
+    </div>`).join('');
+  showChildSection('wordIntro');
+}
+function startSession(){launchWordIntro();}
+function startSessionFromIntro(){
+  if(!session||!session.pool){showToast('Chyba – zkus to znovu','error');return;}
   showChildSection('exercise');
   nextRound();
 }
@@ -1789,8 +1895,10 @@ function nextRound(){
   renderExercise(pickExerciseType(word),word);
 }
 
+const EX_TYPE_CLASS={1:'ex-type-translate',2:'ex-type-emoji',3:'ex-type-listen',4:'ex-type-sentence',5:'ex-type-translate',6:'ex-type-listen',7:'ex-type-translate',8:'ex-type-translate',9:'ex-type-sentence',10:'ex-type-translate',11:'ex-type-flash'};
 function renderExercise(type,word){
   const c=document.getElementById('exerciseContent');
+  c.className=EX_TYPE_CLASS[type]||'';
   if(type===1) renderExType1(c,word);
   else if(type===2) renderExType2(c,word);
   else if(type===3) renderExType3(c,word);
@@ -1800,6 +1908,7 @@ function renderExercise(type,word){
   else if(type===7) renderExType7(c,word);
   else if(type===8) renderExType8(c,word);
   else if(type===9) renderExType9(c,word);
+  else if(type===11) renderExType11(c,word);
   else renderExType10(c,word);
 }
 
@@ -2233,16 +2342,100 @@ function checkLevelUp(oldStars,newStars){
   }
 }
 
+// ============================================================
+// FLASHCARD (type 11)
+// ============================================================
+function renderExType11(c,word){
+  c.innerHTML=`
+    <div class="exercise-card ex-type-flash" style="text-align:center">
+      <div class="exercise-type-label">🃏 Kartička - znáš toto slovíčko?</div>
+      <div class="flashcard-scene">
+        <div class="flashcard" id="flashcard" onclick="flipFlashcard()">
+          <div class="flashcard-face flashcard-front">
+            <span class="flashcard-emoji">${word.emoji||'📚'}</span>
+            <div class="flashcard-word">${esc(word.en)}</div>
+            <div class="flashcard-hint">klikni pro překlad</div>
+          </div>
+          <div class="flashcard-face flashcard-back">
+            <span class="flashcard-emoji">${word.emoji||'📚'}</span>
+            <div class="flashcard-cs">${esc(word.cs)}</div>
+            <div class="flashcard-hint" style="color:rgba(255,255,255,0.45)">${esc(word.en)}</div>
+          </div>
+        </div>
+      </div>
+      <div class="fc-show-hint" id="fcHint">👆 Klikni na kartičku</div>
+      <div class="flashcard-btns" id="fcBtns" style="display:none">
+        <button class="fc-btn-no" onclick="answerFlashcard(false)">✗ Neznám</button>
+        <button class="fc-btn-yes" onclick="answerFlashcard(true)">✓ Znám</button>
+      </div>
+    </div>`;
+}
+function flipFlashcard(){
+  const fc=document.getElementById('flashcard');
+  if(!fc)return;
+  fc.classList.add('flipped');
+  const hint=document.getElementById('fcHint');
+  const btns=document.getElementById('fcBtns');
+  if(hint)hint.style.display='none';
+  if(btns)btns.style.display='grid';
+}
+function answerFlashcard(knew){
+  if(!session.currentWord)return;
+  const btns=document.getElementById('fcBtns');
+  if(btns){btns.querySelectorAll('button').forEach(b=>b.disabled=true);}
+  handleAnswer(knew,nextRound,null);
+}
+
+// ============================================================
+// DAILY GOAL
+// ============================================================
+function getDailyKey(){
+  const d=new Date();
+  const ds=d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate();
+  return pk('daily_'+ds);
+}
+function getDailyDone(){return LS.get(getDailyKey(),0);}
+function incDailyDone(){LS.set(getDailyKey(),getDailyDone()+1);}
+const DAILY_GOAL=5;
+function renderDailyGoal(){
+  const done=getDailyDone();
+  const pct=Math.min(100,Math.round(done/DAILY_GOAL*100));
+  const fill=document.getElementById('dailyGoalFill');
+  const count=document.getElementById('dailyGoalCount');
+  const bar=document.getElementById('dailyGoalBar');
+  if(fill)fill.style.width=pct+'%';
+  if(count)count.textContent=done+'/'+DAILY_GOAL;
+  if(bar){
+    if(done>=DAILY_GOAL){bar.classList.add('daily-goal-done');bar.querySelector('.daily-goal-label').textContent='Cíl splněn! 🎉';}
+    else{bar.classList.remove('daily-goal-done');bar.querySelector('.daily-goal-label').textContent='Dnešní cíl';}
+  }
+}
+
 function finishSession(){
   document.getElementById('progressFill').style.width='100%';
+  incDailyDone();
+  const done=getDailyDone();
   showChildSection('results');
   const stars=getStars();
+  const pct=Math.round(session.correct/session.total*100);
+  const titles=['😅 Nevadí, zkus to znovu!','👍 Dobrá práce!','🌟 Skvěle!','🏆 Perfektní výsledek!'];
+  const titleIdx=pct<50?0:pct<75?1:pct<95?2:3;
+  document.getElementById('resultsTitle').textContent=titles[titleIdx];
   document.getElementById('resultsStars').textContent=session.starsEarned>0?'⭐'.repeat(Math.min(session.starsEarned,10)):'😅';
   document.getElementById('resultsEarned').textContent=`+${session.starsEarned} hvězdiček`;
   document.getElementById('resultsTotalStars').textContent=stars;
   document.getElementById('resultsScore').textContent=`Správně: ${session.correct} z ${session.total} otázek`;
+  const streakEl=document.getElementById('resultsStreakMsg');
+  const streak=getStreak();
+  if(streak.count>=2){streakEl.textContent=`🔥 Série ${streak.count} dní v řadě!`;streakEl.style.display='block';}
+  else streakEl.style.display='none';
+  const dailyEl=document.getElementById('resultsDaily');
+  if(done>=DAILY_GOAL)dailyEl.textContent='🎯 Dnešní cíl splněn! Výborně!';
+  else dailyEl.textContent=`🎯 Dnešní cíl: ${done} z ${DAILY_GOAL} sezení`;
+  setTimeout(()=>{const f=document.getElementById('resultsXpFill');if(f)f.style.width=pct+'%';},100);
   renderWorldMap();
-  spawnConfetti();
+  renderDailyGoal();
+  if(pct>=70)spawnConfetti();
 }
 
 // ============================================================
