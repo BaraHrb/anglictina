@@ -460,13 +460,8 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
   <div id="wordIntroScreen" style="display:none">
     <div class="word-intro-header">
       <div class="word-intro-title">📖 Dnešní slovíčka</div>
-      <div class="word-intro-sub">Klikni na slovíčko a poslechni si ho!</div>
     </div>
-    <div class="word-intro-grid" id="wordIntroGrid"></div>
-    <div class="word-intro-action">
-      <div class="word-intro-hint">🔊 Klikni na kartičku pro poslech</div>
-      <button class="start-btn" onclick="startSessionFromIntro()" style="font-size:20px;padding:14px 36px">🚲 Pojďme na to!</button>
-    </div>
+    <div id="wordIntroGrid"></div>
   </div>
 </div>
 
@@ -2032,42 +2027,66 @@ function launchWordIntro(){
   const pool=buildWordPool();
   if(pool.length<4){showToast('Potřebuješ alespoň 4 slovíčka','error');return;}
   session={pool,round:0,total:10,correct:0,starsEarned:0,consecutiveCorrect:0,currentWord:null};
-  // Sort: unseen/weak words first, then shuffle the rest - max 8
   const sorted=[...pool].sort((a,b)=>{
     const aa=getAccuracy(a.id),ba=getAccuracy(b.id);
     if(aa===-1&&ba!==-1)return -1;
     if(ba===-1&&aa!==-1)return 1;
     return aa-ba;
   });
-  // Always show 4 weakest/newest, then rotate 4 random from the rest
   const core=sorted.slice(0,4);
   const rest=shuffle(sorted.slice(4));
-  const preview=[...core,...rest].slice(0,8);
-  const grid=document.getElementById('wordIntroGrid');
-  grid.innerHTML=preview.map((w,i)=>`
-    <div class="word-intro-card" id="wic_${i}" onclick="speakIntroWord('${esc(w.en).replace(/'/g,"\\'")}',${i})" style="animation:slideInCard .3s ${(i*0.07).toFixed(2)}s ease both;opacity:0">
-      <div class="word-intro-emoji">${w.emoji||'📚'}</div>
-      <div class="word-intro-words">
-        <div class="word-intro-en">${esc(w.en)}</div>
-        <div class="word-intro-cs">${esc(w.cs)}</div>
-      </div>
-      <div class="word-intro-speak-btn">🔊</div>
-    </div>`).join('');
+  session.introWords=[...core,...rest].slice(0,10);
+  session.introIndex=0;
   showChildSection('wordIntro');
-  if(!getMute()) setTimeout(()=>speakIntroWord(preview[0].en,0),700);
+  renderIntroStep();
 }
-function speakIntroWord(text,idx){
-  document.querySelectorAll('.word-intro-card').forEach(c=>c.classList.remove('playing'));
-  const card=document.getElementById('wic_'+idx);
-  if(card)card.classList.add('playing');
-  if(getMute()||!window.speechSynthesis){if(card)setTimeout(()=>card.classList.remove('playing'),800);return;}
+
+function renderIntroStep(){
+  const words=session.introWords;
+  const idx=session.introIndex;
+  const w=words[idx];
+  const total=words.length;
+  const isLast=idx===total-1;
+  const pct=Math.round(((idx+1)/total)*100);
+  const enEsc=esc(w.en).replace(/'/g,"\\'");
+  document.getElementById('wordIntroGrid').innerHTML=`
+    <div style="padding:0 20px;max-width:420px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <div style="flex:1;height:7px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#f0a500,#ffd54f);border-radius:4px;transition:width .4s ease"></div>
+        </div>
+        <div style="font-size:13px;color:var(--text-dim);white-space:nowrap;font-weight:700">${idx+1} / ${total}</div>
+      </div>
+      <div style="background:rgba(255,255,255,0.07);border:2px solid rgba(255,255,255,0.14);border-radius:22px;padding:32px 24px;text-align:center;animation:exSlideIn .25s ease both">
+        <div style="font-size:90px;line-height:1;margin-bottom:14px">${w.emoji||'📚'}</div>
+        <div style="font-family:'Baloo 2',cursive;font-size:40px;color:#fff;line-height:1.1;margin-bottom:6px">${esc(w.en)}</div>
+        <div style="font-size:22px;color:var(--gold);font-weight:600;margin-bottom:20px">${esc(w.cs)}</div>
+        <button id="introSpeakBtn" onclick="introSpeak('${enEsc}')" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.22);color:#fff;font-size:18px;padding:10px 28px;border-radius:14px;cursor:pointer;transition:background .2s">🔊 Přehrát</button>
+      </div>
+      <button onclick="${isLast?'startSessionFromIntro()':'introNextStep()'}" style="display:block;width:100%;margin-top:14px;background:${isLast?'linear-gradient(135deg,#2a7a50,#3aaa6a)':'rgba(255,255,255,0.1)'};border:${isLast?'none':'1.5px solid rgba(255,255,255,0.22)'};color:#fff;font-family:'Baloo 2',cursive;font-size:21px;padding:15px;border-radius:16px;cursor:pointer;transition:all .2s">
+        ${isLast?'🚲 Pojďme na to!':'Další →'}
+      </button>
+    </div>`;
+  if(!getMute()) setTimeout(()=>introSpeak(w.en),450);
+}
+
+function introSpeak(text){
+  const btn=document.getElementById('introSpeakBtn');
+  if(btn){btn.textContent='🔊 ...';btn.disabled=true;}
+  if(getMute()||!window.speechSynthesis){if(btn){btn.textContent='🔊 Přehrát';btn.disabled=false;}return;}
   speechSynthesis.cancel();
   const u=new SpeechSynthesisUtterance(text);
   u.lang='en-US';u.rate=0.82;
   if(_preferredVoice)u.voice=_preferredVoice;
-  u.onend=()=>{if(card)card.classList.remove('playing');};
-  u.onerror=()=>{if(card)card.classList.remove('playing');};
+  u.onend=()=>{if(btn){btn.textContent='🔊 Přehrát';btn.disabled=false;}};
+  u.onerror=()=>{if(btn){btn.textContent='🔊 Přehrát';btn.disabled=false;}};
   speechSynthesis.speak(u);
+}
+
+function introNextStep(){
+  session.introIndex=(session.introIndex||0)+1;
+  if(session.introIndex>=(session.introWords||[]).length){startSessionFromIntro();return;}
+  renderIntroStep();
 }
 function startSession(){launchWordIntro();}
 function startSessionFromIntro(){
