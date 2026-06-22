@@ -2260,9 +2260,22 @@ const ADJ_NOUN_TEMPLATES=[
 
 function getNounGender(word){return NOUN_GENDERS[word.en]||'mi';}
 
+const ANIMATE_NOUNS=new Set(['snake','bat','fox','hedgehog','mouse','frog','chicken','cat','cow','horse','goat','sheep','duck','rabbit','mum','granny','dad','sister','brother','grandad','aunt','uncle','elephant','giraffe','tiger','lion','monkey','zebra','crocodile','parrot','penguin','hippo','dog','panda','whale','kangaroo','shark','bear','dolphin','son','daughter','grandson','granddaughter']);
+const VEHICLE_NOUNS=new Set(['train','plane','bus','lorry','motorbike','taxi','bike','car','scooter','tractor']);
+const ADJ_ANIMATE_ONLY=new Set(['hungry','thirsty','tired','happy','sad','angry','fat','young']);
+const ADJ_ANIMATE_VEHICLE=new Set(['fast','slow','loud','quiet','strong','weak','tall']);
+
 function makeAdjNounPair(noun, pool){
   const gender=getNounGender(noun);
-  const adjs=pool.filter(w=>w.type==='adjective'&&ADJ_FORMS[w.en]&&!w.noSentence);
+  const nounEn=noun.en;
+  const isAnimate=ANIMATE_NOUNS.has(nounEn);
+  const isVehicle=VEHICLE_NOUNS.has(nounEn);
+  const adjs=pool.filter(w=>{
+    if(w.type!=='adjective'||!ADJ_FORMS[w.en]||w.noSentence) return false;
+    if(ADJ_ANIMATE_ONLY.has(w.en)) return isAnimate;
+    if(ADJ_ANIMATE_VEHICLE.has(w.en)) return isAnimate||isVehicle;
+    return true;
+  });
   if(!adjs.length) return null;
   const adj=adjs[Math.floor(Math.random()*adjs.length)];
   const tpl=ADJ_NOUN_TEMPLATES[Math.floor(Math.random()*ADJ_NOUN_TEMPLATES.length)];
