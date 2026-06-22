@@ -1994,26 +1994,11 @@ let session=null;
 
 const LL_UNITS=['LL Unit 1','LL Unit 2','LL Unit 3','LL Unit 4','LL Unit 5','LL Unit 6','LL Unit 7','LL Unit 8','LL Unit 9','LL Unit 10'];
 
-function getSkippedWords(){
-  const ap=getActiveProfile();
-  if(!ap)return new Set();
-  return new Set(LS.get(`vocab_skipped_${ap.id}`,[]) );
-}
-function skipWord(wordId){
-  const ap=getActiveProfile();
-  if(!ap)return;
-  const key=`vocab_skipped_${ap.id}`;
-  const list=LS.get(key,[]);
-  if(!list.includes(wordId)){list.push(wordId);LS.set(key,list);}
-}
-
 function buildWordPool(){
   const all=getWords()||[];
   const ap=getActiveProfile();
   let eligible=ap&&ap.mode==='beginner'?all.filter(w=>!w.noEmoji):all;
   if(ap&&ap.units&&ap.units.length>0) eligible=eligible.filter(w=>ap.units.includes(w.unit));
-  const skipped=getSkippedWords();
-  eligible=eligible.filter(w=>!skipped.has(w.id));
   const sel=getSelectedSet();
   const pool=sel==='all'?eligible:eligible.filter(w=>w.unit===sel);
   return pool.length>=4?pool:eligible;
@@ -2634,8 +2619,8 @@ function renderExType11(c,word){
         <button class="fc-btn-no" onclick="answerFlashcard(false)">✗ Neznám</button>
         <button class="fc-btn-yes" onclick="answerFlashcard(true)">✓ Znám</button>
       </div>
-      <div id="fcSkipWrap" style="display:none;text-align:center;margin-top:8px">
-        <button onclick="skipFlashcard()" style="background:none;border:none;color:rgba(255,255,255,0.35);font-size:13px;cursor:pointer;padding:4px 10px;border-radius:8px;transition:color .2s" onmouseover="this.style.color='rgba(255,255,255,0.7)'" onmouseout="this.style.color='rgba(255,255,255,0.35)'">⏭ Přeskočit slovíčko vždy</button>
+      <div style="text-align:center;margin-top:10px">
+        <button id="fcSpeakBtn" onclick="fcSpeak()" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.2);color:#fff;font-size:22px;padding:8px 20px;border-radius:12px;cursor:pointer;transition:background .2s" title="Přehrát výslovnost">🔊</button>
       </div>
     </div>`;
 }
@@ -2645,17 +2630,12 @@ function flipFlashcard(){
   fc.classList.add('flipped');
   const hint=document.getElementById('fcHint');
   const btns=document.getElementById('fcBtns');
-  const skipWrap=document.getElementById('fcSkipWrap');
   if(hint)hint.style.display='none';
   if(btns)btns.style.display='grid';
-  if(skipWrap)skipWrap.style.display='block';
+  if(!getMute()&&session.currentWord) speakWord(session.currentWord.en);
 }
-function skipFlashcard(){
-  if(!session.currentWord)return;
-  skipWord(session.currentWord.id);
-  session.pool=session.pool.filter(w=>w.id!==session.currentWord.id);
-  showToast('Slovíčko přeskočeno ⏭','info');
-  nextRound();
+function fcSpeak(){
+  if(session.currentWord) speakWord(session.currentWord.en);
 }
 function answerFlashcard(knew){
   if(!session.currentWord)return;
