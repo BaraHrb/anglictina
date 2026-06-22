@@ -470,6 +470,13 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
     </div>
     <div id="emojiQuizContent"></div>
   </div>
+
+  <div id="wordEmojiQuizScreen" style="display:none">
+    <div class="word-intro-header">
+      <div class="word-intro-title">👂 Které obrázek to je?</div>
+    </div>
+    <div id="wordEmojiQuizContent"></div>
+  </div>
 </div>
 
 <!-- PIN SCREEN -->
@@ -1986,6 +1993,7 @@ function showChildSection(sec){
   document.getElementById('resultsScreen').style.display=sec==='results'?'flex':'none';
   document.getElementById('wordIntroScreen').style.display=sec==='wordIntro'?'block':'none';
   document.getElementById('emojiQuizScreen').style.display=sec==='emojiQuiz'?'block':'none';
+  document.getElementById('wordEmojiQuizScreen').style.display=sec==='wordEmojiQuiz'?'block':'none';
 }
 
 function goHome(){showChildSection('map');renderChildUI();}
@@ -2154,10 +2162,83 @@ function emojiQuizAnswer(btn,answerId,correctId){
   setTimeout(()=>{
     session.quizIndex++;
     if(session.quizIndex>=session.quizWords.length){
+      const weWords=(session.introWords||[]).filter(w=>w.emoji);
+      if(weWords.length>=3){
+        session.weWords=shuffle(weWords);
+        session.weIndex=0;
+        showChildSection('wordEmojiQuiz');
+        renderWordEmojiQuizStep();
+      } else {
+        showChildSection('exercise');
+        nextRound();
+      }
+    } else {
+      renderEmojiQuizStep();
+    }
+  },correct?700:1200);
+}
+
+function renderWordEmojiQuizStep(){
+  const words=session.weWords;
+  const idx=session.weIndex;
+  const w=words[idx];
+  const total=words.length;
+  const pct=Math.round((idx/total)*100);
+  const others=shuffle(words.filter(x=>x.id!==w.id)).slice(0,2);
+  const options=shuffle([w,...others]);
+  const enEsc=esc(w.en).replace(/'/g,"\\'");
+  document.getElementById('wordEmojiQuizContent').innerHTML=`
+    <div style="padding:0 20px;max-width:420px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <div style="flex:1;height:7px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#f0a500,#ffd54f);border-radius:4px;transition:width .4s ease"></div>
+        </div>
+        <div style="font-size:13px;color:var(--text-dim);white-space:nowrap;font-weight:700">${idx+1} / ${total}</div>
+      </div>
+      <div style="text-align:center;margin-bottom:22px;animation:exSlideIn .25s ease both">
+        <div style="font-family:'Baloo 2',cursive;font-size:38px;color:#fff;margin-bottom:12px">${esc(w.en)}</div>
+        <button id="weReplayBtn" onclick="weSpeak('${enEsc}')" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.22);color:#fff;font-size:17px;padding:8px 22px;border-radius:12px;cursor:pointer">🔊 Přehrát znovu</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:12px">
+        ${options.map(o=>`
+          <button id="weOpt_${esc(o.id)}" onclick="wordEmojiQuizAnswer(this,'${esc(o.id)}','${esc(w.id)}')"
+            style="background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);border-radius:16px;padding:18px 8px;font-size:56px;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center">
+            ${o.emoji}
+          </button>`).join('')}
+      </div>
+    </div>`;
+  if(!getMute()) setTimeout(()=>weSpeak(w.en),400);
+}
+
+function weSpeak(text){
+  const btn=document.getElementById('weReplayBtn');
+  if(btn){btn.textContent='🔊 ...';btn.disabled=true;}
+  if(getMute()||!window.speechSynthesis){if(btn){btn.textContent='🔊 Přehrát znovu';btn.disabled=false;}return;}
+  speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US';u.rate=0.82;
+  if(_preferredVoice)u.voice=_preferredVoice;
+  u.onend=()=>{if(btn){btn.textContent='🔊 Přehrát znovu';btn.disabled=false;}};
+  u.onerror=()=>{if(btn){btn.textContent='🔊 Přehrát znovu';btn.disabled=false;}};
+  speechSynthesis.speak(u);
+}
+
+function wordEmojiQuizAnswer(btn,answerId,correctId){
+  document.querySelectorAll('#wordEmojiQuizContent button[id^="weOpt_"]').forEach(b=>b.disabled=true);
+  const correct=answerId===correctId;
+  btn.style.background=correct?'rgba(76,175,80,0.45)':'rgba(244,67,54,0.35)';
+  btn.style.borderColor=correct?'#4CAF50':'#f44336';
+  if(!correct){
+    const cb=document.getElementById('weOpt_'+correctId);
+    if(cb){cb.style.background='rgba(76,175,80,0.45)';cb.style.borderColor='#4CAF50';}
+  }
+  setTimeout(()=>{
+    session.weIndex++;
+    if(session.weIndex>=session.weWords.length){
       showChildSection('exercise');
       nextRound();
     } else {
-      renderEmojiQuizStep();
+      renderWordEmojiQuizStep();
     }
   },correct?700:1200);
 }
