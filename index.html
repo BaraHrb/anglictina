@@ -463,6 +463,13 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
     </div>
     <div id="wordIntroGrid"></div>
   </div>
+
+  <div id="emojiQuizScreen" style="display:none">
+    <div class="word-intro-header">
+      <div class="word-intro-title">🎯 Poznáš slovíčko?</div>
+    </div>
+    <div id="emojiQuizContent"></div>
+  </div>
 </div>
 
 <!-- PIN SCREEN -->
@@ -1978,6 +1985,7 @@ function showChildSection(sec){
   document.getElementById('exerciseScreen').style.display=sec==='exercise'?'block':'none';
   document.getElementById('resultsScreen').style.display=sec==='results'?'flex':'none';
   document.getElementById('wordIntroScreen').style.display=sec==='wordIntro'?'block':'none';
+  document.getElementById('emojiQuizScreen').style.display=sec==='emojiQuiz'?'block':'none';
 }
 
 function goHome(){showChildSection('map');renderChildUI();}
@@ -2091,8 +2099,67 @@ function introNextStep(){
 function startSession(){launchWordIntro();}
 function startSessionFromIntro(){
   if(!session||!session.pool){showToast('Chyba – zkus to znovu','error');return;}
-  showChildSection('exercise');
-  nextRound();
+  const words=(session.introWords||[]).filter(w=>w.emoji);
+  if(words.length>=3){
+    session.quizWords=shuffle(words);
+    session.quizIndex=0;
+    showChildSection('emojiQuiz');
+    renderEmojiQuizStep();
+  } else {
+    showChildSection('exercise');
+    nextRound();
+  }
+}
+
+function renderEmojiQuizStep(){
+  const words=session.quizWords;
+  const idx=session.quizIndex;
+  const w=words[idx];
+  const total=words.length;
+  const pct=Math.round((idx/total)*100);
+  // 2 wrong options from intro words (different emoji)
+  const others=shuffle(words.filter(x=>x.id!==w.id)).slice(0,2);
+  const options=shuffle([w,...others]);
+  document.getElementById('emojiQuizContent').innerHTML=`
+    <div style="padding:0 20px;max-width:420px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <div style="flex:1;height:7px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#f0a500,#ffd54f);border-radius:4px;transition:width .4s ease"></div>
+        </div>
+        <div style="font-size:13px;color:var(--text-dim);white-space:nowrap;font-weight:700">${idx+1} / ${total}</div>
+      </div>
+      <div style="text-align:center;margin-bottom:24px;animation:exSlideIn .25s ease both">
+        <div style="font-size:110px;line-height:1;margin-bottom:4px">${w.emoji}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        ${options.map(o=>`
+          <button onclick="emojiQuizAnswer(this,'${esc(o.id)}','${esc(w.id)}')"
+            style="background:rgba(255,255,255,0.08);border:2px solid rgba(255,255,255,0.15);color:#fff;font-family:'Baloo 2',cursive;font-size:24px;padding:16px;border-radius:16px;cursor:pointer;transition:all .2s;text-align:center">
+            ${esc(o.en)}
+          </button>`).join('')}
+      </div>
+    </div>`;
+}
+
+function emojiQuizAnswer(btn,answerId,correctId){
+  document.querySelectorAll('#emojiQuizContent button').forEach(b=>b.disabled=true);
+  const correct=answerId===correctId;
+  btn.style.background=correct?'rgba(76,175,80,0.35)':'rgba(244,67,54,0.35)';
+  btn.style.borderColor=correct?'#4CAF50':'#f44336';
+  if(!correct){
+    const correctBtn=Array.from(document.querySelectorAll('#emojiQuizContent button'))
+      .find(b=>b.getAttribute('onclick')&&b.getAttribute('onclick').includes(`'${correctId}','${correctId}'`));
+    if(correctBtn){correctBtn.style.background='rgba(76,175,80,0.35)';correctBtn.style.borderColor='#4CAF50';}
+  }
+  setTimeout(()=>{
+    session.quizIndex++;
+    if(session.quizIndex>=session.quizWords.length){
+      showChildSection('exercise');
+      nextRound();
+    } else {
+      renderEmojiQuizStep();
+    }
+  },correct?700:1200);
 }
 
 function nextRound(){
