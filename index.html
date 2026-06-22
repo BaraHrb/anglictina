@@ -2039,7 +2039,10 @@ function launchWordIntro(){
     if(ba===-1&&aa!==-1)return 1;
     return aa-ba;
   });
-  const preview=sorted.slice(0,8);
+  // Always show 4 weakest/newest, then rotate 4 random from the rest
+  const core=sorted.slice(0,4);
+  const rest=shuffle(sorted.slice(4));
+  const preview=[...core,...rest].slice(0,8);
   const grid=document.getElementById('wordIntroGrid');
   grid.innerHTML=preview.map((w,i)=>`
     <div class="word-intro-card" id="wic_${i}" onclick="speakIntroWord('${esc(w.en).replace(/'/g,"\\'")}',${i})" style="animation:slideInCard .3s ${(i*0.07).toFixed(2)}s ease both;opacity:0">
