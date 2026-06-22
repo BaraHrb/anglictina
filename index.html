@@ -477,6 +477,13 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
     </div>
     <div id="wordEmojiQuizContent"></div>
   </div>
+
+  <div id="spellQuizScreen" style="display:none">
+    <div class="word-intro-header">
+      <div class="word-intro-title">🔤 Poskládej slovíčko</div>
+    </div>
+    <div id="spellQuizContent"></div>
+  </div>
 </div>
 
 <!-- PIN SCREEN -->
@@ -1994,6 +2001,7 @@ function showChildSection(sec){
   document.getElementById('wordIntroScreen').style.display=sec==='wordIntro'?'block':'none';
   document.getElementById('emojiQuizScreen').style.display=sec==='emojiQuiz'?'block':'none';
   document.getElementById('wordEmojiQuizScreen').style.display=sec==='wordEmojiQuiz'?'block':'none';
+  document.getElementById('spellQuizScreen').style.display=sec==='spellQuiz'?'block':'none';
 }
 
 function goHome(){showChildSection('map');renderChildUI();}
@@ -2235,12 +2243,107 @@ function wordEmojiQuizAnswer(btn,answerId,correctId){
   setTimeout(()=>{
     session.weIndex++;
     if(session.weIndex>=session.weWords.length){
-      showChildSection('exercise');
-      nextRound();
+      session.spellWords=shuffle([...(session.introWords||[])]);
+      session.spellIndex=0;
+      showChildSection('spellQuiz');
+      renderSpellStep();
     } else {
       renderWordEmojiQuizStep();
     }
   },correct?700:1200);
+}
+
+function renderSpellStep(){
+  const words=session.spellWords;
+  const idx=session.spellIndex;
+  const w=words[idx];
+  const total=words.length;
+  const pct=Math.round((idx/total)*100);
+  // Scramble letters, ensure order differs from original
+  const letters=w.en.split('').map((ch,i)=>({ch,i}));
+  let tiles=shuffle([...letters]);
+  if(tiles.map(t=>t.ch).join('')===w.en && tiles.length>1){
+    const tmp=tiles[0];tiles[0]=tiles[1];tiles[1]=tmp;
+  }
+  session.spellTiles={word:w.en, available:[...tiles], placed:[]};
+  _renderSpellUI(w, pct, idx, total);
+}
+
+function _renderSpellUI(w, pct, idx, total){
+  const st=session.spellTiles;
+  document.getElementById('spellQuizContent').innerHTML=`
+    <div style="padding:0 20px;max-width:420px;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px">
+        <div style="flex:1;height:7px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#f0a500,#ffd54f);border-radius:4px;transition:width .4s ease"></div>
+        </div>
+        <div style="font-size:13px;color:var(--text-dim);white-space:nowrap;font-weight:700">${idx+1} / ${total}</div>
+      </div>
+      <div style="text-align:center;margin-bottom:20px;animation:exSlideIn .25s ease both">
+        <div style="font-size:90px;line-height:1">${w.emoji||'📚'}</div>
+      </div>
+      <div id="spellAnswer" style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px;min-height:54px;background:rgba(255,255,255,0.05);border:2px dashed rgba(255,255,255,0.15);border-radius:14px;padding:10px;margin-bottom:14px">
+        ${st.placed.map((t,pi)=>`<button onclick="spellRemove(${pi})" style="background:rgba(99,179,237,0.25);border:2px solid rgba(99,179,237,0.6);color:#fff;font-family:'Baloo 2',cursive;font-size:26px;width:44px;height:44px;border-radius:10px;cursor:pointer">${t.ch.toUpperCase()}</button>`).join('')}
+        ${st.placed.length===0?'<span style="color:rgba(255,255,255,0.25);font-size:14px;align-self:center">Klikni na písmena...</span>':''}
+      </div>
+      <div id="spellTiles" style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-bottom:16px">
+        ${st.available.map((t,ai)=>`<button onclick="spellPlace(${ai})" style="background:rgba(255,255,255,0.1);border:2px solid rgba(255,255,255,0.22);color:#fff;font-family:'Baloo 2',cursive;font-size:26px;width:44px;height:44px;border-radius:10px;cursor:pointer;transition:all .15s">${t.ch.toUpperCase()}</button>`).join('')}
+      </div>
+      <div id="spellFeedback"></div>
+    </div>`;
+}
+
+function spellPlace(ai){
+  const st=session.spellTiles;
+  if(ai<0||ai>=st.available.length)return;
+  const tile=st.available.splice(ai,1)[0];
+  st.placed.push(tile);
+  const w=session.spellWords[session.spellIndex];
+  const pct=Math.round((session.spellIndex/session.spellWords.length)*100);
+  _renderSpellUI(w,pct,session.spellIndex,session.spellWords.length);
+  if(st.placed.length===st.word.length) setTimeout(checkSpelling,200);
+}
+
+function spellRemove(pi){
+  const st=session.spellTiles;
+  if(pi<0||pi>=st.placed.length)return;
+  const tile=st.placed.splice(pi,1)[0];
+  st.available.push(tile);
+  const w=session.spellWords[session.spellIndex];
+  const pct=Math.round((session.spellIndex/session.spellWords.length)*100);
+  _renderSpellUI(w,pct,session.spellIndex,session.spellWords.length);
+}
+
+function checkSpelling(){
+  const st=session.spellTiles;
+  const typed=st.placed.map(t=>t.ch).join('');
+  const correct=typed===st.word;
+  const fb=document.getElementById('spellFeedback');
+  document.querySelectorAll('#spellAnswer button,#spellTiles button').forEach(b=>b.disabled=true);
+  if(correct){
+    document.getElementById('spellAnswer').style.borderColor='#4CAF50';
+    document.getElementById('spellAnswer').style.background='rgba(76,175,80,0.15)';
+    if(fb)fb.innerHTML='<div style="text-align:center;font-size:28px;animation:exSlideIn .2s ease both">✅</div>';
+    setTimeout(()=>{
+      session.spellIndex++;
+      if(session.spellIndex>=session.spellWords.length){showChildSection('exercise');nextRound();}
+      else renderSpellStep();
+    },800);
+  } else {
+    document.getElementById('spellAnswer').style.borderColor='#f44336';
+    document.getElementById('spellAnswer').style.background='rgba(244,67,54,0.1)';
+    if(fb)fb.innerHTML=`<div style="text-align:center;background:rgba(76,175,80,0.13);border:1.5px solid #4CAF50;border-radius:10px;padding:8px 14px;animation:exSlideIn .2s ease both">
+      <div style="font-size:11px;color:#a5d6a7;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:4px">✅ Správně:</div>
+      <div style="font-family:'Baloo 2',cursive;font-size:26px;color:#fff;letter-spacing:4px">${st.word.toUpperCase()}</div>
+      <button onclick="spellNext()" style="margin-top:8px;background:linear-gradient(135deg,#2a7a50,#3aaa6a);border:none;color:#fff;font-family:'Baloo 2',cursive;font-size:17px;padding:8px 24px;border-radius:10px;cursor:pointer">Už vím ✓</button>
+    </div>`;
+  }
+}
+
+function spellNext(){
+  session.spellIndex++;
+  if(session.spellIndex>=session.spellWords.length){showChildSection('exercise');nextRound();}
+  else renderSpellStep();
 }
 
 function nextRound(){
