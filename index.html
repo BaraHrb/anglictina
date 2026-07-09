@@ -1172,6 +1172,16 @@ function initData(){
     LS.set('vocab_mia_extra_v1',true);
   }
 
+  if(!LS.get('vocab_mia_reset_v1',false)){
+    const miaP=(getProfiles()||[]).find(p=>p.name==='Mia');
+    if(miaP){
+      LS.set(`vocab_stats_${miaP.id}`,{});
+      LS.set(`vocab_stars_${miaP.id}`,0);
+      LS.set(`vocab_streak_${miaP.id}`,{count:0,lastDate:''});
+    }
+    LS.set('vocab_mia_reset_v1',true);
+  }
+
   updateStreak();
 }
 
