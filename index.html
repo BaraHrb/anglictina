@@ -2057,19 +2057,47 @@ function pickExerciseType(word){
   return validTypes[Math.floor(Math.random()*validTypes.length)];
 }
 
+function getIntroSeen(){
+  const ap=getActiveProfile();
+  if(!ap) return new Set();
+  return new Set(LS.get(`vocab_intro_seen_${ap.id}`,[]) );
+}
+function markIntroSeen(wordIds){
+  const ap=getActiveProfile();
+  if(!ap) return;
+  const key=`vocab_intro_seen_${ap.id}`;
+  const prev=LS.get(key,[]);
+  LS.set(key,[...new Set([...prev,...wordIds])]);
+}
+function resetIntroSeen(){
+  const ap=getActiveProfile();
+  if(!ap) return;
+  LS.set(`vocab_intro_seen_${ap.id}`,[]);
+}
+
 function launchWordIntro(){
   const pool=buildWordPool();
   if(pool.length<4){showToast('Potřebuješ alespoň 4 slovíčka','error');return;}
   session={pool,round:0,total:10,correct:0,starsEarned:0,consecutiveCorrect:0,currentWord:null};
-  const sorted=[...pool].sort((a,b)=>{
+  const sortByAccuracy=(a,b)=>{
     const aa=getAccuracy(a.id),ba=getAccuracy(b.id);
     if(aa===-1&&ba!==-1)return -1;
     if(ba===-1&&aa!==-1)return 1;
     return aa-ba;
-  });
+  };
+  let seen=getIntroSeen();
+  let unseen=pool.filter(w=>!seen.has(w.id));
+  // If fewer than 10 unseen, reset and start fresh rotation
+  if(unseen.length<10){
+    resetIntroSeen();
+    unseen=[...pool];
+  }
+  const sorted=unseen.sort(sortByAccuracy);
+  // 4 weakest/newest guaranteed + 6 random from the rest
   const core=sorted.slice(0,4);
   const rest=shuffle(sorted.slice(4));
   session.introWords=[...core,...rest].slice(0,10);
+  markIntroSeen(session.introWords.map(w=>w.id));
   session.introIndex=0;
   showChildSection('wordIntro');
   renderIntroStep();
