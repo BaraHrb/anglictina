@@ -150,13 +150,14 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
 .stop-name{font-size:9px;font-weight:700;color:#1e4010;text-align:center;max-width:64px;line-height:1.2;min-height:20px}
 .stop-name.dim{color:rgba(0,0,0,0.3)}
 .stop-stars{font-size:8px;color:#6b4a00;text-align:center}
-.road-track{height:52px;background:linear-gradient(135deg,#2d1b6e,#4a0e8f);border-radius:8px;position:relative;overflow:hidden}
-.road-track::before{content:"✨";position:absolute;left:0;right:0;top:50%;height:3px;background:repeating-linear-gradient(90deg,#FFD700 0,#FFD700 20px,transparent 20px,transparent 40px);transform:translateY(-50%);z-index:1}
-.road-done-overlay{position:absolute;left:0;top:0;bottom:0;background:rgba(100,180,100,0.28);transition:width .6s}
-.bike-wrap{position:absolute;bottom:6px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2;transition:left .6s}
-.bike-wrap{position:absolute;bottom:6px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2;transition:left .6s}
-.bike-emoji{font-size:28px;line-height:1;display:block;filter:drop-shadow(0 2px 4px rgba(255,215,0,0.5))}
-.road-teaser{background:rgba(255,255,255,0.04);border:2px dashed rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;text-align:center;margin-bottom:10px}
+.road-track{height:68px;background:#2a1a08;border-radius:6px;position:relative;overflow:hidden;border:2px solid #4a3520}
+.road-track::before{content:"";position:absolute;left:0;right:0;top:0;bottom:0;background:repeating-linear-gradient(90deg,#5c3a1e 0,#5c3a1e 16px,#2a1a08 16px,#2a1a08 28px);z-index:0}
+.road-done-overlay{position:absolute;left:0;top:0;bottom:0;background:rgba(255,215,0,0.12);transition:width .6s;z-index:1}
+.road-track::after{content:"";position:absolute;left:0;right:0;top:14px;height:5px;background:#b8b8b8;border-radius:2px;box-shadow:0 30px 0 0 #b8b8b8;z-index:2}
+.bike-wrap{position:absolute;bottom:4px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:10;transition:left .8s cubic-bezier(0.4,0,0.2,1)}
+.bike-emoji{display:block;filter:drop-shadow(0 3px 6px rgba(0,0,0,0.6))}
+.bike-shadow{display:none}
+@keyframes puff{0%{opacity:.65;transform:scale(1) translateY(0)}100%{opacity:0;transform:scale(3) translateY(-18px)}}
 .road-teaser-label{font-size:12px;color:var(--text-dim);font-weight:700}
 .road-teaser-hint{font-size:11px;color:rgba(255,215,0,0.6);margin-top:4px}
 .chapter-stars-bar{display:flex;align-items:center;gap:8px;margin-top:10px;background:rgba(255,255,255,0.5);border-radius:16px;padding:6px 12px}
@@ -1977,7 +1978,7 @@ function renderWorldMap(){
     html+=`<div class="road-track">
       <div class="road-done-overlay" style="width:${bikePct}%"></div>
       <div class="bike-wrap" style="left:calc(${bikePct}% * 0.9 + 5%)">
-        <div class="bike-emoji">🧹</div>
+        <div class="bike-emoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 130 55" width="130" height="55"><ellipse cx="24" cy="7" rx="6" ry="5" fill="#ccc" style="animation:puff 1.4s ease-out infinite"/><ellipse cx="32" cy="3" rx="8" ry="6" fill="#ddd" style="animation:puff 1.4s ease-out .5s infinite"/><ellipse cx="42" cy="1" rx="7" ry="5" fill="#bbb" style="animation:puff 1.4s ease-out 1s infinite"/><rect x="17" y="8" width="9" height="12" rx="2" fill="#222"/><rect x="16" y="6" width="11" height="4" rx="2" fill="#333"/><ellipse cx="50" cy="21" rx="9" ry="5" fill="#bb1600"/><rect x="8" y="22" width="84" height="20" rx="7" fill="#cc1a00"/><rect x="80" y="13" width="36" height="29" rx="4" fill="#b01400"/><rect x="85" y="17" width="10" height="9" rx="2" fill="#aedff7"/><rect x="99" y="17" width="9" height="9" rx="2" fill="#aedff7"/><rect x="8" y="30" width="84" height="3" fill="#FFD700"/><circle cx="9" cy="29" r="4" fill="#ffe066"/><circle cx="9" cy="29" r="2" fill="#fff" opacity="0.9"/><rect x="4" y="36" width="9" height="5" rx="1" fill="#991000"/><circle cx="22" cy="46" r="8" fill="#111" stroke="#888" stroke-width="2"/><circle cx="22" cy="46" r="3" fill="#555"/><circle cx="42" cy="46" r="8" fill="#111" stroke="#888" stroke-width="2"/><circle cx="42" cy="46" r="3" fill="#555"/><circle cx="62" cy="46" r="8" fill="#111" stroke="#888" stroke-width="2"/><circle cx="62" cy="46" r="3" fill="#555"/><circle cx="88" cy="46" r="7" fill="#111" stroke="#888" stroke-width="2"/><circle cx="88" cy="46" r="2.5" fill="#555"/><circle cx="106" cy="46" r="7" fill="#111" stroke="#888" stroke-width="2"/><circle cx="106" cy="46" r="2.5" fill="#555"/><rect x="22" y="43" width="42" height="3" rx="1.5" fill="#777"/></svg></div>
         <div class="bike-shadow"></div>
       </div>
     </div>`;
