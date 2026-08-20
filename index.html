@@ -150,12 +150,12 @@ h1,h2,h3,.game-font{font-family:'Baloo 2',cursive}
 .stop-name{font-size:9px;font-weight:700;color:#1e4010;text-align:center;max-width:64px;line-height:1.2;min-height:20px}
 .stop-name.dim{color:rgba(0,0,0,0.3)}
 .stop-stars{font-size:8px;color:#6b4a00;text-align:center}
-.road-track{height:52px;background:#7a7a7a;border-radius:8px;position:relative;overflow:hidden}
-.road-track::before{content:'';position:absolute;left:0;right:0;top:50%;height:3px;background:repeating-linear-gradient(90deg,#ffe066 0,#ffe066 24px,transparent 24px,transparent 44px);transform:translateY(-50%);z-index:1}
+.road-track{height:52px;background:linear-gradient(135deg,#2d1b6e,#4a0e8f);border-radius:8px;position:relative;overflow:hidden}
+.road-track::before{content:"✨";position:absolute;left:0;right:0;top:50%;height:3px;background:repeating-linear-gradient(90deg,#FFD700 0,#FFD700 20px,transparent 20px,transparent 40px);transform:translateY(-50%);z-index:1}
 .road-done-overlay{position:absolute;left:0;top:0;bottom:0;background:rgba(100,180,100,0.28);transition:width .6s}
 .bike-wrap{position:absolute;bottom:6px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2;transition:left .6s}
-.bike-emoji{font-size:28px;line-height:1;display:block;transform:scaleX(-1);filter:drop-shadow(0 2px 2px rgba(0,0,0,0.25))}
-.bike-shadow{width:22px;height:4px;background:rgba(0,0,0,0.2);border-radius:50%;margin-top:-1px}
+.bike-wrap{position:absolute;bottom:6px;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;z-index:2;transition:left .6s}
+.bike-emoji{font-size:28px;line-height:1;display:block;filter:drop-shadow(0 2px 4px rgba(255,215,0,0.5))}
 .road-teaser{background:rgba(255,255,255,0.04);border:2px dashed rgba(255,255,255,0.15);border-radius:12px;padding:12px 16px;text-align:center;margin-bottom:10px}
 .road-teaser-label{font-size:12px;color:var(--text-dim);font-weight:700}
 .road-teaser-hint{font-size:11px;color:rgba(255,215,0,0.6);margin-top:4px}
@@ -1037,26 +1037,25 @@ const WORLD_MAP = [
   },
 ];
 const LEVELS = [
-  {name:"Mugol",                        min:0,    max:49},
-  {name:"Nový student",                 min:50,   max:139},
-  {name:"Student prvního ročníku",      min:140,  max:279},
-  {name:"Novic Chrabromilu",            min:280,  max:459},
-  {name:"Stálý člen kolejě",            min:460,  max:679},
-  {name:"Famfrpálový nadšenec",         min:680,  max:939},
-  {name:"Mocný kouzelník",              min:940,  max:1239},
-  {name:"Hráč Famfrpálu",              min:1240, max:1579},
-  {name:"Ochránce Zlatonky",            min:1580, max:1959},
-  {name:"Člen Armády Dumbbledora",      min:1960, max:2379},
-  {name:"Lovec artefaktů",              min:2380, max:2839},
-  {name:"Zachránce tajemné komnaty",    min:2840, max:3339},
-  {name:"Člen Řádu Fénixe",            min:3340, max:3879},
-  {name:"Strážce Ministerstva kouzel",  min:3880, max:4459},
-  {name:"Lovec Horcruxů",              min:4460, max:5079},
-  {name:"Profesor Bradavic",            min:5080, max:5739},
-  {name:"Šéf Aurorů",                  min:5740, max:6439},
-  {name:"Ředitel/ka Bradavic",          min:6440, max:7179},
-  {name:"Pán/Paní magie",              min:7180, max:7959},
-  {name:"Vyvolený/á",                   min:7960, max:Infinity},
+  {name:"Nástupiště 9¾",              min:0,    max:49},
+  {name:"Příčná ulice",               min:50,   max:139},
+  {name:"Hedvika",                    min:140,  max:259},
+  {name:"Harry",                      min:260,  max:419},
+  {name:"Hermiona",                   min:420,  max:619},
+  {name:"Ron",                        min:620,  max:859},
+  {name:"Hagrid",                     min:860,  max:1139},
+  {name:"Brumbál",                    min:1140, max:1459},
+  {name:"Voldemort",                  min:1460, max:1819},
+  {name:"Moudrý klobouk",             min:1820, max:2219},
+  {name:"Famfrpál",                   min:2220, max:2659},
+  {name:"Zlatonka",                   min:2660, max:3139},
+  {name:"Koště",                      min:3140, max:3659},
+  {name:"Kámen mudrců",               min:3660, max:4219},
+  {name:"Gringottova banka",          min:4220, max:4819},
+  {name:"Zrcadlo z Erisedu",          min:4820, max:5459},
+  {name:"Zapovězený les",             min:5460, max:6139},
+  {name:"Profesor Snape",             min:6140, max:6859},
+  {name:"Profesorka McGonagallová",   min:6860, max:Infinity},
 ];
 const FALLBACK_COLORS = ["#FF6B6B","#4ECDC4","#45B7D1","#96CEB4","#FFEAA7","#DDA0DD","#98FB98"];
 
@@ -1978,7 +1977,7 @@ function renderWorldMap(){
     html+=`<div class="road-track">
       <div class="road-done-overlay" style="width:${bikePct}%"></div>
       <div class="bike-wrap" style="left:calc(${bikePct}% * 0.9 + 5%)">
-        <div class="bike-emoji">🚲</div>
+        <div class="bike-emoji">🧹</div>
         <div class="bike-shadow"></div>
       </div>
     </div>`;
@@ -2140,7 +2139,7 @@ function renderIntroStep(){
         <button id="introSpeakBtn" onclick="introSpeak('${enEsc}')" style="background:rgba(255,255,255,0.1);border:1.5px solid rgba(255,255,255,0.22);color:#fff;font-size:18px;padding:10px 28px;border-radius:14px;cursor:pointer;transition:background .2s">🔊 Přehrát</button>
       </div>
       <button onclick="${isLast?'startSessionFromIntro()':'introNextStep()'}" style="display:block;width:100%;margin-top:14px;background:${isLast?'linear-gradient(135deg,#2a7a50,#3aaa6a)':'rgba(255,255,255,0.1)'};border:${isLast?'none':'1.5px solid rgba(255,255,255,0.22)'};color:#fff;font-family:'Baloo 2',cursive;font-size:21px;padding:15px;border-radius:16px;cursor:pointer;transition:all .2s">
-        ${isLast?'🚲 Pojďme na to!':'Další →'}
+        ${isLast?'🧹 Pojďme na to!':'Další →'}
       </button>
     </div>`;
   if(!getMute()) setTimeout(()=>introSpeak(w.en),450);
